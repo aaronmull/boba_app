@@ -11,9 +11,9 @@ export const styles = StyleSheet.create({
     justifyContent: "center",
   },
   illustration: {
-    width: "100%",
-    height: 310,
-    resizeMode: "contain",
+    width: 400,
+    height: 100,
+    contentFit: "contain",
   },
   title: {
     fontSize: 32,
