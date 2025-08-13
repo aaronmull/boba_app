@@ -4,16 +4,21 @@ export async function getDataForAthlete(req, res) {
     
     try {
 
-        const{name} = req.params
+        const{ clerkUserId } = req.params
         
         const data = await sql`
-            SELECT * FROM data WHERE athlete = ${name} ORDER BY created_at DESC
-        `
+            SELECT d.*, m.metric, m.units
+            FROM data d
+            JOIN athletes a ON d.athlete_id = a.id
+            JOIN metrics m ON d.metric_id = m.id
+            WHERE a.clerk_user_id = ${clerkUserId}
+            ORDER BY d.created_at DESC
+        `;
 
         res.status(200).json(data)
 
     } catch (error) {
-        console.log("Error fetching data", error)
+        console.log("Error fetching data for athlete", error)
         res.status(500).json({message:"Internal server error"})
     }
 
@@ -22,7 +27,7 @@ export async function getDataForAthlete(req, res) {
 export async function getSummary(req, res) {
 
     try {
-        const {name} = req.params
+        const { clerkUserId } = req.params
 
         // Selects metric, measurement, and unit information
         // Uses a subquery to find the personal best for each metric.
@@ -31,30 +36,29 @@ export async function getSummary(req, res) {
         //      using MAX when m.is_time is false (distance-based metrics)
         const personalBests = await sql`
             SELECT
-                d.metric,
+                m.metric,
                 d.measurement,
                 m.units,
-                m.is_time
-            FROM
-                data d
-            JOIN
-                metrics m ON d.metric = m.metric
-            WHERE
-                d.athlete=${name}
+                m.is_time,
+                d.created_at AS pb_date
+            FROM data d
+            JOIN athletes a ON d.athlete_id = a.id
+            JOIN metrics m ON d.metric_id = m.id
+            WHERE a.clerk_user_id=${clerkUserId}
             AND
                 d.measurement = (
                     SELECT
                         CASE
-                            WHEN m.is_time = true THEN MIN(d2.measurement)
+                            WHEN m2.is_time = true THEN MIN(d2.measurement)
                             ELSE MAX(d2.measurement)
                         END
                     FROM
                         data d2
                     JOIN
-                        metrics m2 ON d2.metric = m2.metric
+                        metrics m2 ON d2.metric_id = m2.id
                     WHERE
-                        d2.athlete = ${name}
-                        AND d2.metric = d.metric
+                        d2.athlete_id = a.id
+                        AND d2.metric_id = d.metric_id
                 )
         `
 
@@ -75,9 +79,10 @@ export async function getAllData(req, res) {
         // JOINs data table and athletes table on the athlete column,
         // WHERE show_on_leaderboard is set to true.
         const data = await sql`
-            SELECT d.*
+            SELECT d.*, a.name, m.metric, m.units
             FROM data d
-            JOIN athletes a ON d.athlete = a.name
+            JOIN athletes a ON d.athlete_id = a.id
+            JOIN metrics m ON d.metric_id = m.id
             WHERE a.show_on_leaderboard = true
         `
 
@@ -94,15 +99,22 @@ export async function createData (req, res) {
 
     // athlete, metric, measurement
     try {
-        const {athlete, metric, measurement} = req.body
+        const { clerkUserId, metricId, measurement} = req.body
 
-        if(!athlete || !metric || measurement === undefined) {
+        if(!clerkUserId || !metricId || measurement === undefined) {
             return res.status(400).json({message:"All fields required"})
         }
 
+        const athlete = await sql`
+            SELECT id FROM athletes WHERE clerk_user_id = ${clerkUserId}
+        `;
+        if (athlete.length === 0) {
+            return res.status(404).json({ message: "Athlete not found" })
+        }
+
         const data = await sql`
-            INSERT INTO data(athlete, metric, measurement)
-            VALUES(${athlete},${metric},${measurement})
+            INSERT INTO data(athlete_id, metric_id, measurement)
+            VALUES(${athlete[0].id},${metricId},${measurement})
             RETURNING *
         `
 
