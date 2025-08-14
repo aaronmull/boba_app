@@ -1,4 +1,5 @@
 import express from "express"
+import { requireAuth } from '@clerk/express'
 import { 
     getAthleteByName,
     getAthleteByClerkId, 
@@ -9,11 +10,11 @@ import {
 
 const router = express.Router()
 
+// Get one specific athlete by their Clerk ID
+router.get("/clerk/:clerkUserId", getAthleteByClerkId)
+
 // Get one specific athlete; profile page
 router.get("/:name", getAthleteByName)
-
-// Get one specific athlete by their Clerk ID
-router.get("/clerk:clerkUserId", getAthleteByClerkId)
 
 // Get all athletes; Athlete dropdown
 router.get("/", getAllAthletes)
@@ -22,6 +23,6 @@ router.get("/", getAllAthletes)
 router.post("/", createAthlete)
 
 // Link Clerk ID
-router.patch("/link", linkAthleteAccount)
+router.patch("/link", requireAuth(), linkAthleteAccount)
 
 export default router

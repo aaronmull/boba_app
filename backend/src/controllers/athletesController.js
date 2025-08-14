@@ -37,7 +37,7 @@ export async function getAthleteByClerkId(req, res) {
             return res.status(404).json({ message: "Athlete not found" })
         }
 
-        res,status(200).json(athlete[0])
+        res.status(200).json(athlete[0])
 
     } catch (error) {
         console.error("Error fetching athlete by Clerk ID", error)
