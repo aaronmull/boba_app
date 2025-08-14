@@ -7,15 +7,23 @@ import athletesRoute from "./routes/athletesRoute.js"
 import dataRoute from "./routes/dataRoute.js"
 import metricsRoute from "./routes/metricsRoute.js"
 
+import job from "./config/cron.js"
+
 dotenv.config()
 
 const app = express()
+
+if(process.env.NODE_ENV==="production") job.start();
 
 // middleware
 app.use(rateLimiter)
 app.use(express.json())
 
 const PORT = process.env.PORT || 5001
+
+app.get("/api/health", (req, res) => {
+    res.status(200).json({ status: "ok"});
+});
 
 app.use("/api/athletes", athletesRoute)
 app.use("/api/data", dataRoute)
