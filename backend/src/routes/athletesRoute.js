@@ -1,5 +1,4 @@
 import express from "express"
-import { requireAuth } from '@clerk/express'
 import { 
     getAthleteByName,
     getAthleteByClerkId, 
@@ -23,6 +22,6 @@ router.get("/", getAllAthletes)
 router.post("/", createAthlete)
 
 // Link Clerk ID
-router.patch("/link", requireAuth(), linkAthleteAccount)
+router.patch("/link", linkAthleteAccount)
 
 export default router

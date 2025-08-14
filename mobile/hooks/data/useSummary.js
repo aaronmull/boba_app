@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 
 export function useSummary(clerkUserId) {
 
-    const API_URL = "http://localhost:5001/api"
+    const API_URL = "https://boba-app-api.onrender.com/api"
 
     const[summary, setSummary] = useState([])
     const[loading, setLoading] = useState(true)

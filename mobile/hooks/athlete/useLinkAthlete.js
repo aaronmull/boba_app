@@ -2,7 +2,7 @@ import { useState } from "react";
 
 export function useLinkAthlete() {
 
-    const API_URL = "http://localhost:5001/api"
+    const API_URL = "https://boba-app-api.onrender.com/api"
 
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState(null)

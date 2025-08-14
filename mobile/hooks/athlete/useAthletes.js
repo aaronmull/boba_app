@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 
 export function useAthletes() {
 
-    const API_URL = "http://localhost:5001/api"
+    const API_URL = "https://boba-app-api.onrender.com/api"
     
     const [athletes, setAthletes] = useState([])
     const [loading, setLoading] = useState(true)
