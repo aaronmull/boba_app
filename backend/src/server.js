@@ -3,6 +3,8 @@ import dotenv from "dotenv";
 import { initDB } from "./config/db.js";
 import rateLimiter from "./middleware/rateLimiter.js";
 
+import { ClerkExpressWithAuth } from "@clerk/express"
+
 import athletesRoute from "./routes/athletesRoute.js"
 import dataRoute from "./routes/dataRoute.js"
 import metricsRoute from "./routes/metricsRoute.js"
@@ -18,6 +20,8 @@ if(process.env.NODE_ENV==="production") job.start();
 // middleware
 app.use(rateLimiter)
 app.use(express.json())
+
+app.use(ClerkExpressWithAuth());
 
 const PORT = process.env.PORT || 5001
 

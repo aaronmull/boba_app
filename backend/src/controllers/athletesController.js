@@ -1,5 +1,6 @@
 import { sql } from "../config/db.js"
 
+
 export async function getAthleteByName(req, res) {
     
     try {
@@ -67,10 +68,11 @@ export async function linkAthleteAccount(req, res) {
 
     try {
         
-        const { athleteId, clerkUserId } = req.body
+        const { athleteId } = req.body;
+        const clerkUserId = req.auth.userId;
 
-        if (!athleteId || !clerkUserId) {
-            return res.status(400).json({ message: "athleteId and clerkUserId are required"})
+        if (!athleteId) {
+            return res.status(400).json({ message: "athleteId is required"})
         }
 
         const updatedAthlete = await sql`
