@@ -3,7 +3,7 @@ import dotenv from "dotenv";
 import { initDB } from "./config/db.js";
 import rateLimiter from "./middleware/rateLimiter.js";
 
-import { ClerkExpressWithAuth } from "@clerk/express"
+import { ClerkExpressWithAuth } from "@clerk/clerk-sdk-node"
 
 import athletesRoute from "./routes/athletesRoute.js"
 import dataRoute from "./routes/dataRoute.js"
