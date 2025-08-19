@@ -5,7 +5,8 @@ import {
     getAthleteByClerkId, 
     getAllAthletes, 
     createAthlete, 
-    linkAthleteAccount  } from "../controllers/athletesController.js"
+    linkAthleteAccount  
+} from "../controllers/athletesController.js"
 
 
 const router = express.Router()
