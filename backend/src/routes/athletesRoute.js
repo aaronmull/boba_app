@@ -5,7 +5,8 @@ import {
     getAthleteByClerkId, 
     getAllAthletes, 
     createAthlete, 
-    linkAthleteAccount  
+    linkAthleteAccount,
+    checkClerkLink  
 } from "../controllers/athletesController.js"
 
 
@@ -25,5 +26,8 @@ router.post("/", createAthlete)
 
 // Link Clerk ID
 router.patch("/link", requireAuth(), linkAthleteAccount)
+
+// Check for Clerk ID
+router.get("/checkLink/:clerkUserId", requireAuth(), checkClerkLink)
 
 export default router

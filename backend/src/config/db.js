@@ -19,6 +19,8 @@ export async function initDB() {
             )
         `;
 
+        // users table
+
         // metrics table
         await sql`
             CREATE TABLE IF NOT EXISTS metrics (

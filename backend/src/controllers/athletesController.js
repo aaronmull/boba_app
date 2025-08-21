@@ -27,7 +27,7 @@ export async function getAthleteByClerkId(req, res) {
         const { clerkUserId } = req.params
 
         if (!clerkUserId) {
-            return res.status(400).json({ message: "clerkUserI is required" })
+            return res.status(400).json({ message: "clerkUserId is required" })
         }
 
         const athlete = await sql`
@@ -118,6 +118,34 @@ export async function createAthlete(req, res) {
 
     } catch (error) {
         console.log("Error creating athlete", error)
+        res.status(500).json({message:"Internal server error"})
+    }
+
+}
+
+export async function checkClerkLink(req, res) {
+
+    try {
+
+        const {clerkUserId } = req.params
+
+        if(!clerkUserId) {
+            return res.status(400).json({ message: "clerkUserId is required" })
+        }
+
+        const athlete = await sql`
+            SELECT EXISTS(SELECT 1 FROM athletes WHERE clerk_user_id = ${clerkUserId}) as exists
+        `
+
+        const exists = athlete[0].exists;
+
+        res.status(200).json({
+            exists: exists,
+            clerkUserId: clerkUserId,
+        })
+
+    } catch (error) {
+        console.log("Error checking for Clerk ID", error)
         res.status(500).json({message:"Internal server error"})
     }
 
