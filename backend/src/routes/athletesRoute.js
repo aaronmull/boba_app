@@ -28,6 +28,6 @@ router.post("/", createAthlete)
 router.patch("/link", requireAuth(), linkAthleteAccount)
 
 // Check for Clerk ID
-router.get("/checkLink/:clerkUserId", requireAuth(), checkClerkLink)
+router.get("/checkLink/:clerkUserId", checkClerkLink)
 
 export default router

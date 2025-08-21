@@ -2,35 +2,59 @@
 
 import { Stack } from 'expo-router/stack'
 import { useUser, useAuth } from "@clerk/clerk-expo"
-import { Redirect } from 'expo-router'
+import { Redirect, usePathname } from 'expo-router'
 import { useEffect, useState } from 'react'
 
+// const API_URL = "https://localhost:5001/api"
 const API_URL = "https://boba-app-api.onrender.com/api"
 
 export default function Layout() {
 
-    const { isSignedIn, user } = useUser();
+    const { isSignedIn } = useUser();
     const { userId, getToken, isLoaded } = useAuth();
     const [athleteLinked, setAthleteLinked] = useState(null)
-    
+    const pathname = usePathname();
+
     useEffect(() => {
         async function checkLink() {
-            if (!isSignedIn) return;
+            if (!isSignedIn || !userId) return;
+        
+            // console.log("Starting check for userId:", userId)
 
-            const token = await getToken();
-            const res = await fetch(`${API_URL}/athletes/checkLink/${userId}`, {
-                headers: {
-                    'Authorization': `Bearer ${token}`
+            try {
+                const token = await getToken();
+                // console.log('token retrieved')
+
+                const res = await fetch(`${API_URL}/athletes/checkLink/${userId}`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                })
+                // console.log('fetch went out, status:', res.status)
+
+                if (res.ok) {
+                    const data = await res.json()
+                    setAthleteLinked(data.exists)
+                } else {
+                    setAthleteLinked(false)
                 }
-            })
 
-            // LOOK AT CLAUDE TO FINISH
-
-            // create a route/query or whatever that searches if a specific userId exists in its respective column in the athletes table. If it does not, redirect them 
-            // to a link athlete page. If it does, continue to the home page that will have their summary.
-
+            } catch (error) {
+                console.error('Error checking athlete link:', error)
+                setAthleteLinked(false)
+            }
         }
-    }, [isSignedIn])
 
+        checkLink()
+
+    }, [userId])
+
+    if (!isLoaded || (athleteLinked === null && isSignedIn)) return null;
+
+    if (isSignedIn && athleteLinked === false && pathname !=="/link-athlete") {
+        return <Redirect href='/link-athlete' />
+    }
+
+    // console.log('Rendering Stack - isSignedIn: ', isSignedIn, 'athleteLinked: ', athlete)
     return <Stack screenOptions={{ headerShown: false }}/>
 }
