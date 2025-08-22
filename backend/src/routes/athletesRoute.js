@@ -25,7 +25,7 @@ router.get("/", getAllAthletes)
 router.post("/", createAthlete)
 
 // Link Clerk ID
-router.patch("/link", requireAuth(), linkAthleteAccount)
+router.patch("/link", linkAthleteAccount)
 
 // Check for Clerk ID
 router.get("/checkLink/:clerkUserId", checkClerkLink)

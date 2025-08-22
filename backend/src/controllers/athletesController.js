@@ -68,18 +68,17 @@ export async function linkAthleteAccount(req, res) {
 
     try {
         
-        const { athleteId } = req.body;
-        const clerkUserId = req.auth.userId;
+        const { athleteId, clerkUserId, showOnLeaderboard } = req.body;
 
-        if (!athleteId) {
-            return res.status(400).json({ message: "athleteId is required"})
+        if (!athleteId || !clerkUserId || showOnLeaderboard === undefined) {
+            return res.status(400).json({ message: "athleteId, clerkUserId, and showOnLeaderboard are required"})
         }
 
         const updatedAthlete = await sql`
             UPDATE athletes
-            SET clerk_user_id = ${clerkUserId}
+            SET clerk_user_id = ${clerkUserId}, show_on_leaderboard = ${showOnLeaderboard}
             WHERE id = ${athleteId}
-            RETURNING *
+            RETURNING *;
         `;
 
         if (updatedAthlete.length === 0) {
