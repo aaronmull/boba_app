@@ -65,14 +65,17 @@ export async function getAllAthletes(req, res) {
 }
 
 export async function linkAthleteAccount(req, res) {
-
     try {
-        
+        console.log("📩 Incoming body:", req.body);
+
         const { athleteId, clerkUserId, showOnLeaderboard } = req.body;
 
         if (!athleteId || !clerkUserId || showOnLeaderboard === undefined) {
-            return res.status(400).json({ message: "athleteId, clerkUserId, and showOnLeaderboard are required"})
+            console.warn("⚠️ Missing required fields:", { athleteId, clerkUserId, showOnLeaderboard });
+            return res.status(400).json({ message: "athleteId, clerkUserId, and showOnLeaderboard are required"});
         }
+
+        console.log("🛠 Updating athlete:", athleteId, "with clerkUserId:", clerkUserId);
 
         const updatedAthlete = await sql`
             UPDATE athletes
@@ -81,20 +84,19 @@ export async function linkAthleteAccount(req, res) {
             RETURNING *;
         `;
 
+        console.log("✅ Update result:", updatedAthlete);
+
         if (updatedAthlete.length === 0) {
-            return res.status(404).json({ message: "Athlete not found" })
+            return res.status(404).json({ message: "Athlete not found" });
         }
 
-        res.status(200).json(updatedAthlete[0])
-
+        res.status(200).json(updatedAthlete[0]);
     } catch (error) {
-
-        console.error("Error linking athlete account", error)
-        res.status(500).json({ message: "Internal server error" })
-
+        console.error("❌ Error linking athlete account", error);
+        res.status(500).json({ message: "Internal server error", error: error.message });
     }
-
 }
+
 
 export async function createAthlete(req, res) {
 

@@ -3,7 +3,7 @@ import dotenv from "dotenv";
 import { initDB } from "./config/db.js";
 import rateLimiter from "./middleware/rateLimiter.js";
 
-import { ClerkExpressWithAuth } from "@clerk/clerk-sdk-node"
+import { clerkMiddleware, requireAuth } from "@clerk/express";
 
 import athletesRoute from "./routes/athletesRoute.js"
 import dataRoute from "./routes/dataRoute.js"
@@ -13,15 +13,25 @@ import job from "./config/cron.js"
 
 dotenv.config()
 
+console.log("✅ Clerk keys loaded?", {
+  hasSecret: !!process.env.CLERK_SECRET_KEY,
+  hasPublishable: !!process.env.CLERK_PUBLISHABLE_KEY,
+});
+
 const app = express()
 
 if(process.env.NODE_ENV==="production") job.start();
 
+app.use((req, res, next) => {
+  console.log(`➡️ Incoming request: ${req.method} ${req.url}`);
+  next();
+});
+
+
 // middleware
+app.use(clerkMiddleware());
 app.use(rateLimiter)
 app.use(express.json())
-
-app.use(ClerkExpressWithAuth());
 
 const PORT = process.env.PORT || 5001
 

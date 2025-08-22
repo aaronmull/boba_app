@@ -23,38 +23,49 @@ const LinkAthlete = () => {
 
     try {
       setSubmitting(true);
-
       const token = await getToken();
 
+      console.log("🔵 Attempting to link athlete:", {
+        userId,
+        athleteId: selectedAthlete.id,
+        showOnLeaderboard,
+      });
+
       const res = await fetch(`${API_URL}/athletes/link`, {
-        method: "PUT",
+        method: "PATCH",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`
+          // if you want backend Clerk validation:
+          "Authorization": `Bearer ${token}`,
         },
         body: JSON.stringify({
-          clerkUserId: userId,
           athleteId: selectedAthlete.id,
+          clerkUserId: userId,
           showOnLeaderboard,
         }),
       });
 
+      console.log("🟢 Response status:", res.status);
+      const text = await res.text();
+      console.log("🟢 Raw response text:", text);
+
       if (!res.ok) {
-        const err = await res.text();
-        throw new Error(err)
+        throw new Error(text);
       }
 
-      const data = await res.json();
+      const data = JSON.parse(text);
+      console.log("✅ Parsed JSON:", data);
+
       setLinkedAthlete(data);
       setSuccessModalVisible(true);
-      // TODO: add navigation
 
-    } catch (error) {
-      console.error(err)     
+    } catch (err) {
+      console.error("❌ Link athlete failed:", err);
     } finally {
       setSubmitting(false);
     }
   }
+
 
   if (loading) return <ActivityIndicator size="large" />;
   if (error) return <Text>Error: {error}</Text>
