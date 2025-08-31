@@ -109,4 +109,19 @@ export const styles = StyleSheet.create({
     flex: 1,
     fontSize: 14,
   },
+  
+  // For link-athlete
+  modalBackground: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(0,0,0,0.5)",
+  },
+  modalContainer: {
+    width: 280,
+    padding: 20,
+    backgroundColor: "white",
+    borderRadius: 12,
+    alignItems: "center",
+  },
 });

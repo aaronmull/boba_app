@@ -3,6 +3,9 @@ import { useAthletes } from '../../hooks/athlete/useAthletes'
 import React, {useState} from 'react'
 import { useAuth } from '@clerk/clerk-expo'
 import { useRouter } from "expo-router"
+import { styles } from '../../assets/styles/auth.styles'
+
+
 
 const API_URL = "https://boba-app-api.onrender.com/api";
 
@@ -71,8 +74,8 @@ const LinkAthlete = () => {
   if (error) return <Text>Error: {error}</Text>
   
   return (
-    <View style={{ flex: 1, padding: 16 }}>
-      <Text style={{ fontSize: 20, fontWeight: "bold", marginBottom: 10 }}>
+    <View style={styles.container}>
+      <Text style={styles.title}>
         Link your account to an athlete
       </Text>
 
@@ -137,21 +140,5 @@ const LinkAthlete = () => {
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  modalBackground: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "rgba(0,0,0,0.5)",
-  },
-  modalContainer: {
-    width: 280,
-    padding: 20,
-    backgroundColor: "white",
-    borderRadius: 12,
-    alignItems: "center",
-  },
-});
 
 export default LinkAthlete
