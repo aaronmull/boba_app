@@ -1,10 +1,15 @@
-import { SignedIn, SignedOut, useUser } from '@clerk/clerk-expo'
+import { SignedIn, SignedOut, useUser, useAuth } from '@clerk/clerk-expo'
 import { Link } from 'expo-router'
 import { Text, View } from 'react-native'
 import { SignOutButton } from '../../components/SignOutButton'
+import { useSummary } from '../../hooks/data/useSummary'
 
 export default function Page() {
   const { user } = useUser()
+  const { userId } = useAuth()
+  const { summary, loading, error } = useSummary(userId)
+
+  console.log("data is loaded for", userId, ":", summary)
 
   return (
     <View>

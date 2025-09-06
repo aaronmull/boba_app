@@ -14,7 +14,7 @@ export function useSummary(clerkUserId) {
         
         async function fetchSummary() {
             try{
-                const res = await fetch(`${API_URL}/summary/${clerkUserId}`)
+                const res = await fetch(`${API_URL}/data/summary/${clerkUserId}`)
                 if (!res.ok) throw new Error("Failed to fetch summary");
                 const data = await res.json()
                 setSummary(data.personalBests)

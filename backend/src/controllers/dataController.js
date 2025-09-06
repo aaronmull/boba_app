@@ -25,17 +25,11 @@ export async function getDataForAthlete(req, res) {
 }
 
 export async function getSummary(req, res) {
-
     try {
-        const { clerkUserId } = req.params
+        const { clerkUserId } = req.params;
 
-        // Selects metric, measurement, and unit information
-        // Uses a subquery to find the personal best for each metric.
-        // Subquery uses a CASE statement to determine how the different metrics should be handled:
-        //      using MIN when m.is_time is true (time-based metrics)
-        //      using MAX when m.is_time is false (distance-based metrics)
         const personalBests = await sql`
-            SELECT
+            SELECT DISTINCT ON (m.metric)
                 m.metric,
                 d.measurement,
                 m.units,
@@ -44,33 +38,21 @@ export async function getSummary(req, res) {
             FROM data d
             JOIN athletes a ON d.athlete_id = a.id
             JOIN metrics m ON d.metric_id = m.id
-            WHERE a.clerk_user_id=${clerkUserId}
-            AND
-                d.measurement = (
-                    SELECT
-                        CASE
-                            WHEN m2.is_time = true THEN MIN(d2.measurement)
-                            ELSE MAX(d2.measurement)
-                        END
-                    FROM
-                        data d2
-                    JOIN
-                        metrics m2 ON d2.metric_id = m2.id
-                    WHERE
-                        d2.athlete_id = a.id
-                        AND d2.metric_id = d.metric_id
-                )
-        `
+            WHERE a.clerk_user_id = ${clerkUserId}
+            ORDER BY 
+                m.metric,
+                CASE WHEN m.is_time = true THEN d.measurement END ASC,
+                CASE WHEN m.is_time = false THEN d.measurement END DESC,
+                d.created_at DESC
+        `;
 
-        res.status(200).json({personalBests})
-
-
+        res.status(200).json({ personalBests });
     } catch (error) {
-        console.log("Error fetching summary", error)
-        res.status(500).json({message:"Internal server error"})
+        console.log("Error fetching summary", error);
+        res.status(500).json({ message: "Internal server error" });
     }
-
 }
+
 
 export async function getAllData(req, res) {
 
