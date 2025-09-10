@@ -9,6 +9,7 @@ const coffeeTheme = {
   textLight: "#9A8478",
   expense: "#E74C3C",
   income: "#2ECC71",
+  pb: "#EFBF04",
   card: "#FFFFFF",
   shadow: "#000000",
 };
