@@ -10,6 +10,9 @@ const coffeeTheme = {
   expense: "#E74C3C",
   income: "#2ECC71",
   pb: "#EFBF04",
+  silver: "#8f8f8fff",
+  bronze: "#CD7F32",
+  other: "#444444ff",
   card: "#FFFFFF",
   shadow: "#000000",
 };

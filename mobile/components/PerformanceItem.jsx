@@ -4,18 +4,30 @@ import { styles } from "../assets/styles/home.styles"
 import { COLORS } from "../constants/colors"
 import { formatDate } from "../lib/utils"
 
-// icons? https://oblador.github.io/react-native-vector-icons/
+// https://oblador.github.io/react-native-vector-icons/
 // Map units to respective icons
 const METRIC_ICONS = {
-    s : {component: FontAwesome5, name: "running"},
-    in : {component: Entypo, name: "ruler"},
+    s :  {component: FontAwesome5,        name: "running"},
+    in : {component: Entypo,              name: "ruler"},
     lb : {component: MaterialDesignIcons, name: "weight-lifter"},
 }
 
+// To add functionality for admin users, I can feed a potential prop
+// from Clerk that will allow me to render a delete button AND the
+// name of the athlete that corresponds to the performance. Since 
+// we made this a separate component, rather than passing one athlete's
+// performances, we can pass ALL performances, which would be useful for
+// mid-session errors. Will need to omit the ranking logic under that
+// condition, OR I could make it so it shows the admins where they rank
+// in terms of ALL athletes. I'll figure that out
 export const PerformanceItem = ({ item, performances, metrics }) => {
+    // Get the icon object that corresponds with the unit,
+    // Get the component needed to render the icon through expo/vector-icons
     const iconConfig = METRIC_ICONS[item.units]
     const IconComponent = iconConfig?.component
 
+    // Get the metric table entry that corresponds to the performance metric,
+    // Get the isTime attribute from the table entry for ranking logic
     const metricInfo = metrics.find(m => m.id === item.metric_id)
     const isTime = metricInfo?.is_time
 
@@ -35,16 +47,34 @@ export const PerformanceItem = ({ item, performances, metrics }) => {
     if (rank === 1) label = "🏆 Personal Best"
     else if (rank <= 5) label = `🔥 Top ${rank}`
 
+    {/* Have to figure out some other color for the icons that doesn't look bland */}
+    let iconColor = COLORS.income
+    if (rank === 1) 
+        iconColor = COLORS.pb
+    else if (rank === 2) 
+        iconColor = COLORS.silver
+    else if (rank === 3) 
+        iconColor = COLORS.bronze
+
+    let performanceColor = COLORS.other
+    if (rank === 1) 
+        performanceColor = COLORS.pb
+    else if (rank === 2) 
+        performanceColor = COLORS.silver
+    else if (rank === 3) 
+        performanceColor = COLORS.bronze
+    
+
+
     return (
         <View style={styles.transactionCard}>
             <TouchableOpacity style={styles.transactionContent}>
                 <View style={styles.categoryIconContainer}>
-                    {/* Can configure color later */}
                     {IconComponent && (
                         <IconComponent
                             name={iconConfig.name}
                             size={22}
-                            color={COLORS.income}
+                            color={iconColor}
                         />
                     )}
                 </View>
@@ -52,7 +82,7 @@ export const PerformanceItem = ({ item, performances, metrics }) => {
                     <Text style={styles.transactionTitle}>{item.metric}</Text>
                 </View>
                 <View style={styles.transactionRight}>
-                    <Text style={[styles.transactionAmount, rank === 1 && {color: COLORS.pb}]}>
+                    <Text style={[styles.transactionAmount, { color: performanceColor }]}>
                         {item.measurement} {item.units}
                     </Text>
                     {label && (

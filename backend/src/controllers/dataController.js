@@ -81,22 +81,22 @@ export async function createData (req, res) {
 
     // athlete, metric, measurement
     try {
-        const { clerkUserId, metricId, measurement} = req.body
+        const { athleteId, metricId, measurement} = req.body
 
-        if(!clerkUserId || !metricId || measurement === undefined) {
+        if(!athleteId || !metricId || measurement == null) {
             return res.status(400).json({message:"All fields required"})
         }
 
-        const athlete = await sql`
-            SELECT id FROM athletes WHERE clerk_user_id = ${clerkUserId}
-        `;
-        if (athlete.length === 0) {
-            return res.status(404).json({ message: "Athlete not found" })
+        const athlete = await sql`SELECT id FROM athletes WHERE id = ${athleteId}`;
+        const metric = await sql`SELECT id FROM metrics WHERE id = ${metricId}`;
+        if (!athlete.length || !metric.length) {
+        return res.status(400).json({ message: "Invalid athlete or metric" });
         }
+
 
         const data = await sql`
             INSERT INTO data(athlete_id, metric_id, measurement)
-            VALUES(${athlete[0].id},${metricId},${measurement})
+            VALUES(${athleteId},${metricId},${measurement})
             RETURNING *
         `
 

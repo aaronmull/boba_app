@@ -36,9 +36,10 @@ export async function initDB() {
                 athlete_id INT NOT NULL REFERENCES athletes(id) ON DELETE CASCADE,
                 metric_id INT NOT NULL REFERENCES metrics(id) ON DELETE CASCADE,
                 measurement FLOAT NOT NULL,
-                created_at DATE NOT NULL DEFAULT CURRENT_DATE
+                created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
             )
         `;
+
 
         // Leaderboard index for faster metric queries
         await sql`

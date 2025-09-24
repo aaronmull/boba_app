@@ -61,12 +61,13 @@ export default function Page() {
           </View>
           </View>
           {/* RIGHT -- Figure out what to do with add button and admin permissions */}
+          {/* Going to need to make a different homepage for admin users that shows the add button */}
           <View style={styles.headerRight}>
             <SignOutButton />
-            {/* <TouchableOpacity style={styles.addButton} onPress={() => router.push("/create")}>
+            <TouchableOpacity style={styles.addButton} onPress={() => router.push("/create")}>
               <Ionicons name="add" size={20} color="#FFF" />
               <Text style={styles.addButtonText}>Add</Text>
-            </TouchableOpacity> */}
+            </TouchableOpacity>
           </View>
         </View>
         
