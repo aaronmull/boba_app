@@ -86,14 +86,14 @@ export const styles = StyleSheet.create({
     marginBottom: 20,
   },
   currencySymbol: {
-    fontSize: 32,
+    fontSize: 24,
     fontWeight: "bold",
     color: COLORS.text,
     marginRight: 8,
   },
   amountInput: {
     flex: 1,
-    fontSize: 36,
+    fontSize: 20,
     fontWeight: "bold",
     color: COLORS.text,
   },
