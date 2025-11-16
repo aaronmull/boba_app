@@ -18,7 +18,6 @@ const CreateScreen = () => {
     const metricRef = useRef(null)
     const athleteRef = useRef(null)
 
-
     const { metrics, mLoading, mError } = useMetrics()
     const { athletes, aLoading, aError, loadAthletes } = useAthletes()
 
@@ -30,7 +29,19 @@ const CreateScreen = () => {
 
     const [feet, setFeet] = useState("")
     const [inches, setInches] = useState("")
-     
+    
+    const role = user.publicMetadata.role;
+    const isCoach = role == "coach";
+    if(!isCoach){
+        return (
+            <View>
+                <Text>
+                    You do not have permission to view this page.
+                </Text>
+            </View>
+        )
+    }
+
     const handleCreate = async () => {
         // validations
         if (!metric) return Alert.alert("Error", "Please select a metric");

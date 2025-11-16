@@ -1,5 +1,5 @@
 import { View, Text, TouchableOpacity, Touchable } from "react-native"
-import { FontAwesome5, Entypo, MaterialDesignIcons } from "@expo/vector-icons"
+import { FontAwesome5, Entypo, MaterialDesignIcons, Ionicons } from "@expo/vector-icons"
 import { styles } from "../assets/styles/home.styles"
 import { COLORS } from "../constants/colors"
 import { formatDate } from "../lib/utils"
@@ -20,7 +20,7 @@ const METRIC_ICONS = {
 // mid-session errors. Will need to omit the ranking logic under that
 // condition, OR I could make it so it shows the admins where they rank
 // in terms of ALL athletes. I'll figure that out
-export const PerformanceItem = ({ item, performances, metrics }) => {
+export const PerformanceItem = ({ item, performances, metrics, isCoach, undoData }) => {
     // Get the icon object that corresponds with the unit,
     // Get the component needed to render the icon through expo/vector-icons
     const iconConfig = METRIC_ICONS[item.units]
@@ -106,7 +106,12 @@ export const PerformanceItem = ({ item, performances, metrics }) => {
                     <Text style={styles.transactionDate}>{formatDate(item.created_at)}</Text>
                 </View>
             </TouchableOpacity>
-            {/* Omitting delete button, gotta make alternative component for admin users */}
+            {/* Delete button */}
+            {isCoach && (
+                <TouchableOpacity style={styles.deleteButton} onPress={() => undoData(item.id)}>
+                    <Ionicons name="trash-outline" size={20} color={COLORS.expense} />
+                </TouchableOpacity>
+            )}
         </View>
     )
 }

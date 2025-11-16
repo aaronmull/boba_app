@@ -20,17 +20,19 @@ import NoPerformancesFound from "../../components/NoPerformancesFound"
 // Data & utils
 import { useData } from "../../hooks/data/useData"
 import { styles } from "../../assets/styles/home.styles"
-import { formatDate } from "../../lib/utils"
 import { useAthletes } from "../../hooks/athlete/useAthletes"
 
 
 export default function Page() {
   const { user } = useUser()
-  const { performances, summary, metrics, loadingData, loadData } = useData(user.id)
+  const { performances, summary, metrics, loadingData, loadData, undoData } = useData(user.id)
   const { athletes, userData, loadingAthletes, loadAthletes } = useAthletes(user.id)
   const [ refreshing, setRefreshing ] = useState(false)
   const router = useRouter();
 
+  const role = user.publicMetadata.role;
+  const isCoach = role == "coach";
+  
   const onRefresh = async () => {
     setRefreshing(true)
     await Promise.all([loadData(), loadAthletes()])
@@ -62,18 +64,20 @@ export default function Page() {
           <View style={styles.welcomeContainer}>
             <Text style={styles.welcomeText}>Welcome,</Text>
             <Text style={styles.usernameText}>
-              {user?.emailAddresses[0]?.emailAddress.split("@")[0]} {/* ADD USERNAME FUNCTIONALITY AND CHANGE THIS */}
+              {userData?.name ?? user?.emailAddresses[0]?.emailAddress.split("@")[0]}
             </Text>
           </View>
           </View>
-          {/* RIGHT -- Figure out what to do with add button and admin permissions */}
-          {/* Going to need to make a different homepage for admin users that shows the add button */}
+          {/* RIGHT */}
           <View style={styles.headerRight}>
             <SignOutButton />
-            <TouchableOpacity style={styles.addButton} onPress={() => router.push("/create")}>
-              <Ionicons name="add" size={20} color="#FFF" />
-              <Text style={styles.addButtonText}>Add</Text>
-            </TouchableOpacity>
+            
+            {isCoach && (
+              <TouchableOpacity style={styles.addButton} onPress={() => router.push("/create")}>
+                <Ionicons name="add" size={20} color="#FFF" />
+                <Text style={styles.addButtonText}>Add</Text>
+              </TouchableOpacity>
+            )}
           </View>
         </View>
         
@@ -88,7 +92,7 @@ export default function Page() {
         data={performances}
         keyExtractor={(item) => item.id.toString()}
         renderItem={({item}) => (
-          <PerformanceItem item={item} performances={performances} metrics={metrics}/>
+          <PerformanceItem item={item} performances={performances} metrics={metrics} isCoach={isCoach} undoData={undoData}/>
         )}
         ListEmptyComponent={<NoPerformancesFound />}
         showsVerticalScrollIndicator={false}

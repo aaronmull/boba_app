@@ -55,6 +55,19 @@ export function useData(clerkUserId) {
         }
     }, [fetchData, fetchSummary, clerkUserId])
 
-    return {performances, summary, metrics, loading, loadData}
+    const undoData = async (id) => {
+        try {
+            const response = await fetch(`${API_URL}/data/${id}`, {method: "DELETE"})
+            if(!response.ok) throw new Error("Failed to undo data");
+
+            loadData();
+            Alert.alert("Success", "Data undone successfully")
+        } catch (error) {
+            console.error("Error deleting transaction:", error)
+            Alert.alert("Error", error.message)
+        }
+    }
+
+    return {performances, summary, metrics, loading, loadData, undoData}
 
 }
