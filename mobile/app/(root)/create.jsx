@@ -20,31 +20,48 @@ const CreateScreen = () => {
 
 
     const { metrics, mLoading, mError } = useMetrics()
-    const { athletes, aLoading, aError } = useAthletes()
+    const { athletes, aLoading, aError, loadAthletes } = useAthletes()
 
     const [metric, setMetric] = useState(null)
     const [athlete, setAthlete] = useState(null)
     const [performance, setPerformance] = useState("")
     const [isLoading, setIsLoading] = useState(false)
     const [selectedSheet, setSelectedSheet] = useState(true)
+
+    const [feet, setFeet] = useState("")
+    const [inches, setInches] = useState("")
      
     const handleCreate = async () => {
         // validations
         if (!metric) return Alert.alert("Error", "Please select a metric");
         if (!athlete) return Alert.alert("Error", "Please select an athlete");
-        if (!performance) { // Might need to add more checks for distance measurements
-            Alert.alert("Error", "Please enter a valid number")
-            return;
+        
+        if(metric.is_time) {
+            if (!performance || isNaN(performance)) {
+                return Alert.alert("Error", "Please enter a valid time")
+            }
+        } else {
+            const ft = parseFloat(feet) || 0;
+            const inch = parseFloat(inches) || 0;
+            const totalInches = ft * 12 + inch;
+            if (totalInches <= 0) {
+                return Alert.alert("Error", "Please enter a valid distance in feet and inches.");
+            }
         }
-
         setIsLoading(true)
         try {
-            // if(!metric.is_time) : do feet to inches calculation, make util
-            // for now just create performances for time metrics
+            let finalMeasurement;
+            if(metric.is_time) {
+                finalMeasurement = parseFloat(performance);
+            } else {
+                const ft = parseFloat(feet) || 0;
+                const inch = parseFloat(inches) || 0;
+                finalMeasurement = ft * 12 + inch;
+            }
 
             console.log('Athlete: ', athlete.name)
             console.log('Metric: ', metric.metric)
-            console.log('Performance: ', performance)
+            console.log('Performance: ', finalMeasurement)
 
             const response = await fetch(`${API_URL}/data`, {
                 method:"POST",
@@ -54,7 +71,7 @@ const CreateScreen = () => {
                 body: JSON.stringify({
                     athleteId: athlete.id,
                     metricId: metric.id,
-                    measurement: parseFloat(performance)
+                    measurement: finalMeasurement,
                 }),
             })
 
@@ -74,6 +91,8 @@ const CreateScreen = () => {
 
             setAthlete(null);
             setPerformance("");
+            setFeet("");
+            setInches("");
 
         } catch (error) {
             Alert.alert("Error", error.message || "Failed to create performance")
@@ -144,27 +163,48 @@ const CreateScreen = () => {
                         </Text>
                     </TouchableOpacity>
                 </View>
-
-                {/* Performance -- will have to edit to make ft. measurements easier to input */}
                 {metric && athlete && (
                     <View style={styles.amountContainer}>
+                        {/* Time or distance? */}
+                        {metric.is_time ? (
+                            <>
+                                <TextInput 
+                                    style={styles.amountInput}
+                                    placeholder="Please enter performance"
+                                    placeholderTextColor={COLORS.textLight}
+                                    value={performance}
+                                    onChangeText={setPerformance}
+                                    keyboardType="numeric"
+                                />
+                                <Text style={styles.currencySymbol}>{metric.units}.</Text>
+                            </>
+                        ) : (
+                            <>
+                                <View style={{ flexDirection: "row", alignItems: "center", flex: 1 }}>
+                                    {/* Feet Input */}
+                                    <TextInput
+                                        style={[styles.amountInput, { textAlign: "center" }]}
+                                        placeholder="XX"
+                                        placeholderTextColor={COLORS.textLight}
+                                        keyboardType="numeric"
+                                        value={feet}
+                                        onChangeText={setFeet}
+                                    />
+                                    <Text style={[styles.currencySymbol, { marginRight: 16 }]}>ft</Text>
 
-                        {/* {!metric.is_time && (
-                            <Text>In progress</Text>
-                        )} */}
-
-                        <TextInput 
-                            style={styles.amountInput}
-                            placeholder="Please enter performance"
-                            placeholderTextColor={COLORS.textLight}
-                            value={performance}
-                            onChangeText={setPerformance}
-                            keyboardType="numeric"
-                        />
-                        <Text style={styles.currencySymbol}>{metric.units}.</Text>
-
-
-
+                                    {/* Inches Input */}
+                                    <TextInput
+                                        style={[styles.amountInput, { textAlign: "center" }]}
+                                        placeholder="XX"
+                                        placeholderTextColor={COLORS.textLight}
+                                        keyboardType="numeric"
+                                        value={inches}
+                                        onChangeText={setInches}
+                                    />
+                                    <Text style={styles.currencySymbol}>in</Text>
+                                </View>
+                                </>
+                        )}
                     </View>
                 )}
 

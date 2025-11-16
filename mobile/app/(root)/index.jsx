@@ -21,25 +21,31 @@ import NoPerformancesFound from "../../components/NoPerformancesFound"
 import { useData } from "../../hooks/data/useData"
 import { styles } from "../../assets/styles/home.styles"
 import { formatDate } from "../../lib/utils"
+import { useAthletes } from "../../hooks/athlete/useAthletes"
 
 
 export default function Page() {
   const { user } = useUser()
-  const { performances, summary, metrics, loading, loadData } = useData(user.id)
+  const { performances, summary, metrics, loadingData, loadData } = useData(user.id)
+  const { athletes, userData, loadingAthletes, loadAthletes } = useAthletes(user.id)
   const [ refreshing, setRefreshing ] = useState(false)
   const router = useRouter();
 
   const onRefresh = async () => {
     setRefreshing(true)
-    await loadData()
+    await Promise.all([loadData(), loadAthletes()])
     setRefreshing(false)
   }
 
   useEffect(() => {
-    loadData()
-  }, [loadData])
+    if(user?.id)
+    {
+      loadData()
+      loadAthletes()
+    }
+  }, [user?.id])
 
-  if(loading && !refreshing) return <PageLoader />
+  if((loadingData || loadingAthletes) && !refreshing) return <PageLoader />
 
   return (
     <View style={styles.container}>
