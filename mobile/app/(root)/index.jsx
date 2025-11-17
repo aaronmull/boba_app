@@ -80,8 +80,10 @@ export default function Page() {
             )}
           </View>
         </View>
-        
-        <PersonalBestsCard summary={summary} />
+        {/* CHANGE THIS TO ONLY RENDER IF NOT A COACH, only visible for me for testing purposes */}
+        {isCoach && (
+          <PersonalBestsCard summary={summary} />
+        )}
         <View style={styles.transactionsHeaderContainer}>
           <Text style={styles.sectionTitle}>Recent Performances</Text>
         </View>

@@ -1,4 +1,5 @@
 import { useState, useCallback } from "react";
+import { Alert } from "react-native";
 
 export function useData(clerkUserId) {
 
@@ -56,16 +57,33 @@ export function useData(clerkUserId) {
     }, [fetchData, fetchSummary, clerkUserId])
 
     const undoData = async (id) => {
-        try {
-            const response = await fetch(`${API_URL}/data/${id}`, {method: "DELETE"})
-            if(!response.ok) throw new Error("Failed to undo data");
-
-            loadData();
-            Alert.alert("Success", "Data undone successfully")
-        } catch (error) {
-            console.error("Error deleting transaction:", error)
-            Alert.alert("Error", error.message)
-        }
+        Alert.alert(
+            "Delete Performance",
+            "Are you sure you want to delete this performance?",
+            [
+                {
+                    text: "Cancel",
+                    style: "cancel",
+                },
+                {
+                    text: "Delete",
+                    style: "destructive",
+                    onPress: async () => {
+                        try {
+                            const response = await fetch(`${API_URL}/data/${id}`, {
+                                method: "DELETE",
+                            })
+                            if(!response.ok) throw new Error("Failed to undo data")
+                            await loadData();
+                            Alert.alert("Success", "Performance deleted.")
+                        } catch (error) {
+                            console.error("Error deleting data:", error)
+                            Alert.alert("Error", error.message)
+                        }
+                    }
+                }
+            ]
+        )
     }
 
     return {performances, summary, metrics, loading, loadData, undoData}
