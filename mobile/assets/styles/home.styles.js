@@ -131,6 +131,10 @@ export const styles = StyleSheet.create({
     color: COLORS.text,
     marginBottom: 15,
   },
+  sectionSubtitle: {
+    fontSize: 12,
+    color: COLORS.silver,
+  },  
   transactionCard: {
     backgroundColor: COLORS.card,
     borderRadius: 12,

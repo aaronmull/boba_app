@@ -86,6 +86,7 @@ export default function Page() {
         )}
         <View style={styles.transactionsHeaderContainer}>
           <Text style={styles.sectionTitle}>Recent Performances</Text>
+          <Text style={styles.sectionSubtitle}>Scroll down to refresh</Text>
         </View>
       </View>
       <FlatList 
