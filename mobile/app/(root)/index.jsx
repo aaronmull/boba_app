@@ -21,23 +21,31 @@ import NoPerformancesFound from "../../components/NoPerformancesFound"
 import { useData } from "../../hooks/data/useData"
 import { styles } from "../../assets/styles/home.styles"
 import { useAthletes } from "../../hooks/athlete/useAthletes"
+import { useAdmin } from "../../hooks/admin/useAdmin"
 
 
 export default function Page() {
   const { user } = useUser()
   const { performances, summary, metrics, loadingData, loadData, undoData } = useData(user.id)
+  const { allData, loadingAdmin, loadAdminData } = useAdmin();
   const { athletes, userData, loadingAthletes, loadAthletes } = useAthletes(user.id)
   const [ refreshing, setRefreshing ] = useState(false)
   const router = useRouter();
 
   const role = user.publicMetadata.role;
   const isCoach = role == "coach";
+  const performanceList = isCoach ? allData : performances;
   
   const onRefresh = async () => {
-    setRefreshing(true)
-    await Promise.all([loadData(), loadAthletes()])
-    setRefreshing(false)
+  setRefreshing(true);
+  if (isCoach) {
+    await Promise.all([loadAdminData(), loadAthletes()]);
+  } else {
+    await Promise.all([loadData(), loadAthletes()]);
   }
+  setRefreshing(false);
+};
+
 
   useEffect(() => {
     if(user?.id)
@@ -47,7 +55,8 @@ export default function Page() {
     }
   }, [user?.id])
 
-  if((loadingData || loadingAthletes) && !refreshing) return <PageLoader />
+if(((isCoach && loadingAdmin) || (!isCoach && loadingData) || loadingAthletes) && !refreshing)
+  return <PageLoader />;
 
   return (
     <View style={styles.container}>
@@ -80,7 +89,7 @@ export default function Page() {
             )}
           </View>
         </View>
-        {/* CHANGE THIS TO ONLY RENDER IF NOT A COACH, only visible for me for testing purposes */}
+        {/* MAKE SURE THIS ONLY RENDERS IF NOT A COACH */} 
         {isCoach && (
           <PersonalBestsCard summary={summary} />
         )}
@@ -92,10 +101,10 @@ export default function Page() {
       <FlatList 
         style={styles.transactionsList}
         contentContainerStyle={styles.transactionsListContent}
-        data={performances}
+        data={performanceList}
         keyExtractor={(item) => item.id.toString()}
         renderItem={({item}) => (
-          <PerformanceItem item={item} performances={performances} metrics={metrics} isCoach={isCoach} undoData={undoData}/>
+          <PerformanceItem item={item} performances={performanceList} metrics={metrics} isCoach={isCoach} undoData={undoData}/>
         )}
         ListEmptyComponent={<NoPerformancesFound />}
         showsVerticalScrollIndicator={false}

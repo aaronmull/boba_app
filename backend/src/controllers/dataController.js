@@ -54,7 +54,7 @@ export async function getSummary(req, res) {
 }
 
 
-export async function getAllData(req, res) {
+export async function getLeaderboardData(req, res) {
 
     try {
 
@@ -71,11 +71,35 @@ export async function getAllData(req, res) {
         res.status(200).json(data)
 
     } catch (error) {
-        console.log("Error fetching data", error)
+        console.log("Error fetching leaderboard data", error)
         res.status(500).json({message:"Internal server error"})
     }
 
 }
+
+export async function getAdminData(req, res) {
+    try {
+        const data = await sql`
+            SELECT 
+                d.*, 
+                a.name AS athlete_name,
+                a.clerk_user_id,
+                m.metric,
+                m.units,
+                m.is_time
+            FROM data d
+            JOIN athletes a ON d.athlete_id = a.id
+            JOIN metrics m ON d.metric_id = m.id
+            ORDER BY d.created_at DESC
+        `;
+
+        res.status(200).json(data);
+    } catch (error) {
+        console.error("Error fetching admin data", error);
+        res.status(500).json({ message: "Internal server error" });
+    }
+}
+
 
 export async function createData (req, res) {
 

@@ -100,6 +100,9 @@ export const PerformanceItem = ({ item, performances, metrics, isCoach, undoData
                     <Text style={[styles.transactionAmount, { color: performanceColor }]}>
                         {formatPerformance(item)}
                     </Text>
+                    {isCoach && (
+                        <Text style={styles.transactionDate}>{item.athlete_name}</Text>
+                    )}
                     {label && (
                         <Text style={styles.transactionDate}>{label}</Text>
                     )}
