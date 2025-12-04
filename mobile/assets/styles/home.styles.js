@@ -15,7 +15,6 @@ export const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    marginBottom: 20,
     paddingHorizontal: 0,
     paddingVertical: 12,
   },
@@ -264,5 +263,36 @@ export const styles = StyleSheet.create({
   },
   transactionsListContent: {
     paddingBottom: 20,
+  },
+  categoryGrid: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: 10,
+    paddingBottom: 12,
+    justifyContent: "center"
+  },
+  categoryButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingHorizontal: 16,
+    paddingVertical: 10,
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: COLORS.border,
+    backgroundColor: COLORS.white,
+  },
+  categoryButtonActive: {
+    backgroundColor: COLORS.primary,
+    borderColor: COLORS.primary,
+  },
+  categoryIcon: {
+    marginRight: 6,
+  },
+  categoryButtonText: {
+    color: COLORS.text,
+    fontSize: 14,
+  },
+  categoryButtonTextActive: {
+    color: COLORS.white,
   },
 });

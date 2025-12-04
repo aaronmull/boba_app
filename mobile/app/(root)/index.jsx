@@ -8,7 +8,7 @@ import { SignedIn, SignedOut, useUser } from "@clerk/clerk-expo"
 // UI components
 import { FlatList, RefreshControl, Text, TouchableOpacity, View } from "react-native"
 import { Image } from "expo-image"
-import { Ionicons } from "@expo/vector-icons"
+import { Ionicons, AntDesign } from "@expo/vector-icons"
 
 // Custom components
 import { SignOutButton } from "../../components/SignOutButton"
@@ -80,7 +80,6 @@ if(((isCoach && loadingAdmin) || (!isCoach && loadingData) || loadingAthletes) &
           {/* RIGHT */}
           <View style={styles.headerRight}>
             <SignOutButton />
-            
             {isCoach && (
               <TouchableOpacity style={styles.addButton} onPress={() => router.push("/create")}>
                 <Ionicons name="add" size={20} color="#FFF" />
@@ -89,8 +88,24 @@ if(((isCoach && loadingAdmin) || (!isCoach && loadingData) || loadingAthletes) &
             )}
           </View>
         </View>
+        
+        <View style={styles.categoryGrid}>
+            {/* Add condition to check if the athlete wants to be on the leaderboards*/}
+            {true && (
+              <TouchableOpacity style={styles.addButton} onPress={() => router.push("/leaderboards")}>
+                <Ionicons name="list-sharp" size={20} color="#FFF"/>
+                <Text style={styles.addButtonText}>View Leaderboards</Text>
+              </TouchableOpacity>
+            )}
+
+            <TouchableOpacity style={styles.addButton} onPress={() => router.push("/charts")}>
+              <AntDesign name="line-chart" size={20} color="#FFF"/>
+              <Text style={styles.addButtonText}>View Charts</Text>
+            </TouchableOpacity>
+        </View>
+
         {/* MAKE SURE THIS ONLY RENDERS IF NOT A COACH */} 
-        {isCoach && (
+        {true && (
           <PersonalBestsCard summary={summary} />
         )}
         <View style={styles.transactionsHeaderContainer}>
