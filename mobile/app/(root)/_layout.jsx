@@ -9,5 +9,12 @@ export default function Layout() {
     if (!isLoaded) return null;
     if (!isSignedIn) return <Redirect href={"/sign-in"} />;
 
-    return <Stack screenOptions={{ headerShown: false }}/>
+    return ( 
+        <Stack screenOptions={{ headerShown: false }}>
+            <Stack.Screen name="index" />
+            <Stack.Screen name="create" />
+            <Stack.Screen name="charts" />
+            <Stack.Screen name="leaderboards" />
+        </Stack>
+    )
 }

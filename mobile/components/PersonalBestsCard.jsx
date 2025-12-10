@@ -59,7 +59,7 @@ export const PersonalBestsCard = ({ summary }) => {
                   <IconComponent
                     name={iconConfig.name}
                     size={16}
-                    color={COLORS.pb}
+                    color={COLORS.yellow}
                   />
                 )}
               </View>

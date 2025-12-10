@@ -15,6 +15,7 @@ const bobaTheme = {
   other: "#444444ff",
   card: "#FFFFFF",
   shadow: "#000000",
+  yellow: "#D6AC46",
 };
 
 export const THEMES = {
