@@ -10,3 +10,9 @@ export function formatDate(dateString) {
     timeZone: "UTC",
   });
 }
+
+export function getAge(birthdate) {
+  const dob = new Date(birthdate)
+  const diff = Date.now() - dob.getTime()
+  return Math.floor(diff / (1000 * 60 * 60 * 24 * 365.25))
+}

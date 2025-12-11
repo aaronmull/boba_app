@@ -34,21 +34,21 @@ app.get("/api/sports", async(req, res) => {
     
     try {
         const sports = [
-            {"sport": "Baseball"},
-            {"sport": "Basketball"},
-            {"sport": "Field Hockey"},
-            {"sport": "Football"},
-            {"sport": "Golf"},
-            {"sport": "Gymnastics"},
-            {"sport": "Ice Hockey"},
-            {"sport": "Lacrosse"},
-            {"sport": "Soccer"},
-            {"sport": "Softball"},
-            {"sport": "Swimming"},
-            {"sport": "Tennis"},
-            {"sport": "Track and Field"},
-            {"sport": "Volleyball"},
-            {"sport": "Wrestling"},
+            {"id": 0, "sport": "Baseball"},
+            {"id": 1, "sport": "Basketball"},
+            {"id": 2, "sport": "Field Hockey"},
+            {"id": 3, "sport": "Football"},
+            {"id": 4, "sport": "Golf"},
+            {"id": 5, "sport": "Gymnastics"},
+            {"id": 6, "sport": "Ice Hockey"},
+            {"id": 7, "sport": "Lacrosse"},
+            {"id": 8, "sport": "Soccer"},
+            {"id": 9, "sport": "Softball"},
+            {"id": 10, "sport": "Swimming"},
+            {"id": 11, "sport": "Tennis"},
+            {"id": 12, "sport": "Track & Field"},
+            {"id": 13, "sport": "Volleyball"},
+            {"id": 14, "sport": "Wrestling"},
         ]
 
         res.status(200).json(sports)

@@ -61,11 +61,25 @@ export async function getLeaderboardData(req, res) {
         // JOINs data table and athletes table on the athlete column,
         // WHERE show_on_leaderboard is set to true.
         const data = await sql`
-            SELECT d.*, a.name, m.metric, m.units
+            SELECT DISTINCT ON (a.id, m.metric)
+                d.id,
+                a.name,
+                a.sport,
+                m.metric,
+                m.units,
+                m.is_time,
+                d.measurement,
+                d.created_at
             FROM data d
             JOIN athletes a ON d.athlete_id = a.id
             JOIN metrics m ON d.metric_id = m.id
             WHERE a.show_on_leaderboard = true
+            ORDER BY
+                a.id,
+                m.metric,
+                CASE WHEN m.is_time = true THEN d.measurement END ASC,
+                CASE WHEN m.is_time = false THEN d.measurement END DESC,
+                d.created_at ASC
         `
 
         res.status(200).json(data)

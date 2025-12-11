@@ -37,14 +37,14 @@ export default function Page() {
   const performanceList = isCoach ? allData : performances;
   
   const onRefresh = async () => {
-  setRefreshing(true);
-  if (isCoach) {
-    await Promise.all([loadAdminData(), loadAthletes()]);
-  } else {
-    await Promise.all([loadData(), loadAthletes()]);
-  }
-  setRefreshing(false);
-};
+    setRefreshing(true);
+    if (isCoach) {
+      await Promise.all([loadAdminData(), loadAthletes()]);
+    } else {
+      await Promise.all([loadData(), loadAthletes()]);
+    }
+    setRefreshing(false);
+  };
 
 
   useEffect(() => {
@@ -55,8 +55,8 @@ export default function Page() {
     }
   }, [user?.id])
 
-if(((isCoach && loadingAdmin) || (!isCoach && loadingData) || loadingAthletes) && !refreshing)
-  return <PageLoader />;
+  if(((isCoach && loadingAdmin) || (!isCoach && loadingData) || loadingAthletes) && !refreshing)
+    return <PageLoader />;
 
   return (
     <View style={styles.container}>
