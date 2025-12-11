@@ -1,4 +1,4 @@
-// styles/create.styles.js
+// styles/leaderboard.styles.js
 import { StyleSheet } from "react-native";
 import { COLORS } from "../../constants/colors";
 
@@ -14,6 +14,12 @@ export const styles = StyleSheet.create({
     padding: 20,
     borderBottomWidth: 1,
     borderBottomColor: COLORS.border,
+  },
+  headerCenter: {
+    position: "absolute",
+    left: 0,
+    right: 0,
+    alignItems: "center",
   },
   headerTitle: {
     fontSize: 18,
@@ -125,6 +131,12 @@ export const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
   },
+  sectionTitleCenter: {
+    left: 0,
+    right: 0,
+    alignItems: "center",
+    paddingVertical: 20,
+  },
   categoryGrid: {
     flexDirection: "row",
     flexWrap: "wrap",
@@ -161,8 +173,109 @@ export const styles = StyleSheet.create({
   },
   pickerCard: {
     padding: 20,
+    borderBottomWidth: 1,
+    borderBottomColor: COLORS.border
   },
   pickerContainer: {
     marginBottom: 10,
   },
+  leaderboardContainer: {
+    marginTop: 20,
+    paddingHorizontal: 16,
+    marginBottom: 60,
+  },
+
+  /* ---------- Header Row (Rank | Name | Performance) ---------- */
+  headerRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    paddingVertical: 8,
+    borderBottomWidth: 1,
+    borderBottomColor: COLORS.border,
+    marginBottom: 6,
+  },
+
+  headerText: {
+    fontWeight: "600",
+    fontSize: 14,
+    color: COLORS.text,
+  },
+
+  /* ---------- Row Container ---------- */
+  row: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: COLORS.card,
+    paddingVertical: 12,
+    paddingHorizontal: 14,
+    marginBottom: 8,
+    borderRadius: 12,
+    shadowColor: "#000",
+    shadowOpacity: 0.06,
+    shadowOffset: { width: 0, height: 2 },
+    shadowRadius: 3,
+    elevation: 2, // Android
+  },
+
+  /* Rank Badge */
+  rankContainer: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    backgroundColor: COLORS.primary,
+    justifyContent: "center",
+    alignItems: "center",
+    marginRight: 14,
+  },
+
+  rankText: {
+    color: COLORS.white,
+    fontWeight: "700",
+    fontSize: 14,
+  },
+
+  /* Name + Sport container */
+  infoContainer: {
+    flex: 1,
+  },
+
+  nameText: {
+    fontSize: 16,
+    fontWeight: "600",
+    color: COLORS.text,
+  },
+
+  sportText: {
+    fontSize: 13,
+    color: COLORS.mutedText ?? "#7A7A7A",
+    marginTop: 2,
+  },
+
+  /* Performance column */
+  performanceText: {
+    fontSize: 16,
+    fontWeight: "700",
+    color: COLORS.text,
+    textAlign: "right",
+    minWidth: 70,
+  },
+  medal: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    justifyContent: "center",
+    alignItems: "center",
+    marginRight: 14,
+  },
+
+  gold: { backgroundColor: COLORS.pb },
+  silver: { backgroundColor: COLORS.silver },
+  bronze: { backgroundColor: COLORS.bronze },
+
+  medalText: {
+    color: "#000",
+    fontWeight: "700",
+    fontSize: 14,
+  },
+
 });

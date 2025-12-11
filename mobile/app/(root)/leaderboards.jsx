@@ -12,6 +12,7 @@ import { useRouter } from 'expo-router'
 import { Ionicons } from '@expo/vector-icons'
 import { COLORS } from '../../constants/colors'
 import { getAge } from '../../lib/utils'
+import LeaderboardList from '../../components/LeaderboardList'
 
 export default function LeaderboardScreen() {
   const { user } = useUser()
@@ -26,84 +27,104 @@ export default function LeaderboardScreen() {
   const [ ageRange, setAgeRange ] = useState(null)
   const [ gender, setGender ] = useState([])
 
-  const [ refreshing, setRefreshing ] = useState(false)
-
   // Dropdown Pickers
-  const [ metricOpen, setMetricOpen ] = useState(false)
-  const [ sportOpen, setSportOpen ] = useState(false)
-  const [ ageOpen, setAgeOpen ] = useState(false)
-  const [ genderOpen, setGenderOpen] = useState(false)
+  const [dropdownOpen, setDropdownOpen] = useState({
+    metric: false,
+    sport: false,
+    age: false,
+    gender: false,
+  })
 
-  const handleMetricChange = (itemValue, itemIndex) => setMetric(itemValue)
-  const handleSportChange = (itemValue, itemIndex) => setSport(itemValue)
-  const handleAgeChange = (itemValue, itemIndex) => setAgeRange(itemValue)
-  const handleGenderChange = (itemValue, itemIndex) => setGender(itemValue)
+  const closeAll = () =>
+    setDropdownOpen({metric: false, sport: false, age: false, gender: false, })
 
-  const onMetricOpen = useCallback(() => {
-    setSportOpen(false)
-    setAgeOpen(false)
-    setGenderOpen(false)
-  }, [])
-  const onSportOpen = useCallback(() => {
-    setMetricOpen(false)
-    setAgeOpen(false)
-    setGenderOpen(false)
-  }, [])
-  const onAgeOpen = useCallback(() => {
-    setMetricOpen(false)
-    setSportOpen(false)
-    setGenderOpen(false)
-  }, [])
-  const onGenderOpen = useCallback(() => {
-    setMetricOpen(false)
-    setSportOpen(false)
-    setAgeOpen(false)
-  }, [])
+  const openDropdown = name => {
+    closeAll()
+    setDropdownOpen(prev => ({ ...prev, [name]: true}))
+  }
 
-  const ageRanges = [
-    { label: "Middle School (12-14)", value: "middle" },
-    { label: "High School (15-18)", value: "high"},
-    { label: "College & Older (19+)", value: "college" },
-  ]
-
-  function athleteInAgeRange(athlete, ageRange) {
-    const age = getAge(athlete.dob)
-    if(age < 12) return false;
-    switch (ageRange) {
-      case "middle":
-        return age >= 12 && age <= 14;
-      case "high":
-        return age >= 15 && age <= 18;
-      case "college":
-        return age >= 19;
-      default:
-        return true;
+  const handleSetOpen = (name) => (shouldOpen) => {
+    if(shouldOpen) {
+      openDropdown(name)
+    } else {
+      setDropdownOpen(prev => ({ ...prev, [name]: false }))
     }
   }
 
-  const onRefresh = async () => {
-    setRefreshing(true)
-    await Promise.all([loadAthletes(), loadSports()])
-    setRefreshing(false)
+  const ageRanges = [
+    { label: "Middle School (12-14)", value: "middle" },
+    { label: "High School (14-18)", value: "high"},
+    { label: "College & Older (18+)", value: "college" },
+  ]
+
+  function athleteInAgeRange(athlete, range) {
+    const age = getAge(athlete.dob)
+    if(age < 12) return false;
+    if(range === "middle")  return age >= 12 && age <= 14
+    if(range === "high")    return age >= 14 && age <= 18
+    if(range === "college") return age >= 18
+    return true;
   }
+
+  // Filter leaderboard data to match the filters the user selects
+  const filteredData = leaderboardData
+    // filter based on metric
+    .filter(entry => !metric || entry.metric === metric)
+    // filter based on sport
+    .filter(entry => sport.length === 0 || sport.includes(entry.sport))
+    // filter based on gender
+    .filter(entry => gender.length === 0 || gender.includes(entry.gender))
+    // filter based on dob
+    .filter(entry => !ageRange || athleteInAgeRange(entry, ageRange))
+
+  const sortLeaderboard = (data) => {
+    return [...data].sort((a, b) => {
+      if (a.is_time) return a.measurement - b.measurement
+      return b.measurement - a.measurement
+    })
+  }
+
+  const formatPerformance = (item) => {
+    if(item.units === "in") {
+      if(item.metric === "Vertical Jump") return `${item.measurement}"`
+      const totalInches = Number(item.measurement);
+      const feet = Math.floor(totalInches / 12);
+      const inches = Math.round(totalInches % 12);
+      return `${feet}' ${inches}"`;
+    }
+    if (item.units === "s") {
+      return `${Number(item.measurement).toFixed(2)} s`;
+    }
+    if (item.units === "lb") {
+      return `${Number(item.measurement).toFixed(1)} lb`;
+    }
+    return item.measurement ?? "-"
+  }
+  
   if(loadingLeaderboard || loadingAthletes || loadingMetrics || loadingSports) return <PageLoader />
 
   return (
     <View style={styles.container}>
+      
+      {/* HEADER */}
       <View style={styles.header}>
         <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
             <Ionicons name="arrow-back" size={24} color={COLORS.text} />
         </TouchableOpacity>
-        {/* Fix the styles to make title centered without tabs. Maybe add an export button? */}
-        <Text style={styles.headerTitle}>Leaderboards                            </Text>
+        <View style={styles.headerCenter}>
+          <Text style={styles.headerTitle}>Leaderboards</Text>
+        </View>
       </View>
+
+      {/* FILTERS AND LEADERBOARD */}
       <ScrollView>
+
+        {/* FILTERS */}
         <View style={styles.pickerCard}>
           <Text style={styles.sectionTitle}>Metric</Text>
           <DropDownPicker 
-            open={metricOpen}
-            onOpen={onMetricOpen}
-            setOpen={setMetricOpen}
+            open={dropdownOpen.metric}
+            setOpen={handleSetOpen("metric")}
             value={metric}
             setValue={setMetric}
             items={metrics.map(m => ({
@@ -112,7 +133,6 @@ export default function LeaderboardScreen() {
             }))}
             maxHeight={200}
             zIndex={3000}
-            zIndexInverse={1000}
             containerStyle={styles.pickerContainer}
             placeholder='Select a Metric'
             placeholderStyle={{ color: 'grey', }}
@@ -122,9 +142,8 @@ export default function LeaderboardScreen() {
           />
           <Text style={styles.sectionTitle}>Sport</Text>
           <DropDownPicker 
-            open={sportOpen}
-            onOpen={onSportOpen}
-            setOpen={setSportOpen}
+            open={dropdownOpen.sport}
+            setOpen={handleSetOpen("sport")}
             value={sport}
             setValue={setSport}
             items={sports.map(s => ({
@@ -132,8 +151,7 @@ export default function LeaderboardScreen() {
               value: s.sport,
             }))}
             maxHeight={200}
-            zIndex={2000}
-            zIndexInverse={2000}
+            zIndex={2500}
             containerStyle={styles.pickerContainer}
             placeholder='Select Sport(s)'
             placeholderStyle={{ color: 'grey', }}
@@ -156,9 +174,8 @@ export default function LeaderboardScreen() {
           />
           <Text style={styles.sectionTitle}>Gender</Text>
           <DropDownPicker 
-            open={genderOpen}
-            onOpen={onGenderOpen}
-            setOpen={setGenderOpen}
+            open={dropdownOpen.gender}
+            setOpen={handleSetOpen("gender")}
             value={gender}
             setValue={setGender}
             items={[
@@ -166,8 +183,7 @@ export default function LeaderboardScreen() {
               {label: "Female", value: "Female"},
             ]}
             maxHeight={200}
-            zIndex={1500}
-            zIndexInverse={1500}
+            zIndex={2000}
             containerStyle={styles.pickerContainer}
             placeholder='Select Gender(s)'
             placeholderStyle={{ color: "grey", }}
@@ -180,7 +196,6 @@ export default function LeaderboardScreen() {
             multipleText="%d selected"
             badgeTextStyle={{ fontSize: 14 }}
             badgeStyle={{
-              backgroundColor: COLORS.primary,
               borderRadius: 12,
               paddingHorizontal: 8,
               paddingVertical: 4,
@@ -189,15 +204,13 @@ export default function LeaderboardScreen() {
           />
           <Text style={styles.sectionTitle}>Age Range</Text>
           <DropDownPicker 
-            open={ageOpen}
-            onOpen={onAgeOpen}
-            setOpen={setAgeOpen}
+            open={dropdownOpen.age}
+            setOpen={handleSetOpen("age")}
             value={ageRange}
             setValue={setAgeRange}
             items={ageRanges}
             maxHeight={200}
-            zIndex={1400}
-            zIndexInverse={1400}
+            zIndex={1500}
             containerStyle={styles.pickerContainer}
             placeholder='Select Age Range'
             placeholderStyle={{ color: "grey" }}
@@ -206,6 +219,15 @@ export default function LeaderboardScreen() {
             multiple={false}
           />
         </View>
+
+        {/* LEADERBOARD */}
+        {metric ? (
+          <LeaderboardList data={filteredData} />
+        ) : (
+          <View style={styles.sectionTitleCenter}>
+            <Text style={styles.sectionTitle}>Select a Metric to Show its Leaderboard</Text>
+          </View>
+        )}
       </ScrollView>
     </View>
   )

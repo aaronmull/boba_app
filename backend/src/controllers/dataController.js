@@ -65,6 +65,8 @@ export async function getLeaderboardData(req, res) {
                 d.id,
                 a.name,
                 a.sport,
+                a.gender,
+                a.dob,
                 m.metric,
                 m.units,
                 m.is_time,
