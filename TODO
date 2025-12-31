@@ -1,6 +1,12 @@
-1. Leaderboard page
-    Button only visible if users want to be on leaderboards
-2. Charts page
-    Will have a chart which you can change metrics and show how you've progressed over time
-3. Athlete account linking
+1. Charts page
+    Add date ranges, add athlete comparisons for coaches
+        Add a settings button in header to toggle these options on/off?
+    Add chart and chart styles
+2. Athlete account linking
     Determine solution; should I give it to the athletes or the coaches. How do I prevent athletes from selecting someone that isn't themselves?
+3. Add export button to charts and leaderboards pages.
+4. Settings button on homepage
+    Change if you wanna be on the leaderboards
+    Account info (email, name)
+    Change / Forgot Password Button there and on log in page
+5. Add x's to picker menu

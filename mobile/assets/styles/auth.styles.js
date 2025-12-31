@@ -14,6 +14,7 @@ export const styles = StyleSheet.create({
     width: 400,
     height: 100,
     contentFit: "contain",
+    alignSelf: "center",
   },
   title: {
     fontSize: 32,

@@ -46,15 +46,6 @@ export default function Page() {
     setRefreshing(false);
   };
 
-
-  useEffect(() => {
-    if(user?.id)
-    {
-      loadData()
-      loadAthletes()
-    }
-  }, [user?.id])
-
   if(((isCoach && loadingAdmin) || (!isCoach && loadingData) || loadingAthletes) && !refreshing)
     return <PageLoader />;
 

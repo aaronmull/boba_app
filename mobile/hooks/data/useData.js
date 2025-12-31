@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Alert } from "react-native";
 
 export function useData(clerkUserId) {
@@ -85,6 +85,10 @@ export function useData(clerkUserId) {
             ]
         )
     }
+
+    useEffect(() => {
+        loadData();
+    }, [loadData]);
 
     return {performances, summary, metrics, loading, loadData, undoData}
 

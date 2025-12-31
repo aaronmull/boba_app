@@ -13,12 +13,12 @@ import { Ionicons } from '@expo/vector-icons'
 import { COLORS } from '../../constants/colors'
 import { getAge } from '../../lib/utils'
 import LeaderboardList from '../../components/LeaderboardList'
+import { Feather } from '@expo/vector-icons'
 
 export default function LeaderboardScreen() {
   const { user } = useUser()
   const router = useRouter()
   const { leaderboardData, loading: loadingLeaderboard, error: dataError } = useLeaderboardData()
-  const { athletes, userData, loading: loadingAthletes, loadAthletes } = useAthletes(user.id)
   const { metrics, loading: loadingMetrics, error: metricsError } = useMetrics()
   const { sports, loading: loadingSports, error: sportsError, loadSports } = useSports()
 
@@ -52,17 +52,17 @@ export default function LeaderboardScreen() {
   }
 
   const ageRanges = [
-    { label: "Middle School (12-14)", value: "middle" },
-    { label: "High School (14-18)", value: "high"},
-    { label: "College & Older (18+)", value: "college" },
+    { label: "Middle School (11-14)", value: "middle" },
+    { label: "High School (13-19)", value: "high"},
+    { label: "College & Older (17+)", value: "college" },
   ]
 
   function athleteInAgeRange(athlete, range) {
     const age = getAge(athlete.dob)
     if(age < 12) return false;
-    if(range === "middle")  return age >= 12 && age <= 14
-    if(range === "high")    return age >= 14 && age <= 18
-    if(range === "college") return age >= 18
+    if(range === "middle")  return age >= 11 && age <= 14
+    if(range === "high")    return age >= 13 && age <= 19
+    if(range === "college") return age >= 17
     return true;
   }
 
@@ -101,7 +101,7 @@ export default function LeaderboardScreen() {
     return item.measurement ?? "-"
   }
   
-  if(loadingLeaderboard || loadingAthletes || loadingMetrics || loadingSports) return <PageLoader />
+  if(loadingLeaderboard || loadingMetrics || loadingSports) return <PageLoader />
 
   return (
     <View style={styles.container}>
