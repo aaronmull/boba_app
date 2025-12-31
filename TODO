@@ -1,9 +1,7 @@
-1. Charts page
-    Add date ranges, add athlete comparisons for coaches
-        Add a settings button in header to toggle these options on/off?
-    Add chart and chart styles
-2. Athlete account linking
-    Determine solution; should I give it to the athletes or the coaches. How do I prevent athletes from selecting someone that isn't themselves?
+1. Athlete account linking
+    Allow users to select which athlete is themselves. Verify its themselves using birth date.
+2. Add athlete button
+    Add button on coach home page to allow admin users to create new athletes.
 3. Settings button on homepage
     Change if you wanna be on the leaderboards
     Account info (email, name)

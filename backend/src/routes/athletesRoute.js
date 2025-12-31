@@ -3,8 +3,10 @@ import {
     getAthleteByName,
     getAthleteByClerkId, 
     getAllAthletes, 
-    createAthlete, 
-    linkAthleteAccount  } from "../controllers/athletesController.js"
+    createAthlete,
+    checkIfLinked,
+    getAvailableAthletes,  
+    linkAthlete } from "../controllers/athletesController.js"
 
 
 const router = express.Router()
@@ -21,7 +23,12 @@ router.get("/", getAllAthletes)
 // New athlete post
 router.post("/", createAthlete)
 
-// Link Clerk ID
-router.patch("/link", linkAthleteAccount)
+// Check if the user's Clerk ID is already linked
+router.get("/by-clerk/:clerkUserId", checkIfLinked)
+
+// Get list of athletes that have no Clerk ID
+router.get("/unlinked", getAvailableAthletes)
+
+router.post("/link", linkAthlete)
 
 export default router
