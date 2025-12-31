@@ -1,5 +1,13 @@
 1. Athlete account linking
-    Allow users to select which athlete is themselves. Verify its themselves using birth date.
+    Allow users to select which athlete is themselves. Verify it's themselves using birth date.
+    Flow:
+        User signs in / creates account
+            Is the user ID already assigned to an athlete? Then redirect to home page.
+            Otherwise, redirect to link athlete page.
+                Dropdown Menu of athletes that do not have a user id linked to it.
+                Menu to enter birth date to verify they are the athlete they selected.
+                Button to update the athlete in the athletes table with the new Clerk user ID.
+                    After pressed, the user is redirected to the home page.
 2. Add athlete button
     Add button on coach home page to allow admin users to create new athletes.
 3. Settings button on homepage
