@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View, TouchableOpacity, ScrollView } from 'react-native'
-import React, { useState } from 'react'
+import React, { useMemo, useState } from 'react'
 import { useUser } from '@clerk/clerk-expo'
 import { useRouter } from 'expo-router'
 import { useAthletes } from '../../hooks/athlete/useAthletes'
@@ -11,6 +11,7 @@ import { Ionicons } from '@expo/vector-icons'
 import { COLORS } from '../../constants/colors'
 import { useMetrics } from '../../hooks/metrics/useMetrics'
 import DropDownPicker from 'react-native-dropdown-picker';
+import Chart from '../../components/Chart'
 
 export default function ChartScreen() {
   const { user } = useUser()
@@ -48,28 +49,58 @@ export default function ChartScreen() {
     }
   }
 
-  const formatPerformance = (item) => {
-    if(item.units === "in") {
-      if(item.metric === "Vertical Jump") return `${item.measurement}"`
-      const totalInches = Number(item.measurement);
-      const feet = Math.floor(totalInches / 12);
-      const inches = Math.round(totalInches % 12);
-      return `${feet}' ${inches}"`;
-    }
-    if (item.units === "s") {
-      return `${Number(item.measurement).toFixed(2)} s`;
-    }
-    if (item.units === "lb") {
-      return `${Number(item.measurement).toFixed(1)} lb`;
-    }
-    return item.measurement ?? "-"
-  }
+  const filteredData = performanceList
+    .filter(entry => !metric || entry.metric === metric)
+    .filter(entry => !athlete || entry.athlete_name === athlete)
+
+  const sorted = [...filteredData].sort(
+    (a, b) => new Date(a.created_at) - new Date(b.created_at)
+  );
+
+  const chartData = useMemo(() => {
+    if (!sorted.length) return null;
+
+    return {
+      labels: sorted.map(entry =>
+        new Date(entry.created_at).toLocaleDateString("en-US", {
+          month: "short",
+          day: "numeric",
+        })
+      ),
+      datasets: [
+        {
+          data: sorted.map(entry => entry.measurement),
+          strokeWidth: 2,
+        },
+      ],
+    };
+  }, [sorted]);
+
+  // const formatPerformance = (item) => {
+  //   if(item.units === "in") {
+  //     if(item.metric === "Vertical Jump") return `${item.measurement}"`
+  //     const totalInches = Number(item.measurement);
+  //     const feet = Math.floor(totalInches / 12);
+  //     const inches = Math.round(totalInches % 12);
+  //     return `${feet}' ${inches}"`;
+  //   }
+  //   if (item.units === "s") {
+  //     return `${Number(item.measurement).toFixed(2)} s`;
+  //   }
+  //   if (item.units === "lb") {
+  //     return `${Number(item.measurement).toFixed(1)} lb`;
+  //   }
+  //   return item.measurement ?? "-"
+  // }
 
   if(loadingAthletes || loadingData || (isCoach && loadingAdminData)) return <PageLoader />
 
   const canRenderChart = isCoach
     ? Boolean(metric && athlete)
     : Boolean(metric)
+
+  // console.log(sorted)
+  // console.log(chartData)
 
   return (
     <View style={styles.container}>
@@ -145,10 +176,18 @@ export default function ChartScreen() {
             </Text>
           </View>
         )}
-        {canRenderChart && (
+        {canRenderChart && chartData && (
           <>
             <View style={styles.sectionTitleCenter}>
-              <Text style={styles.sectionTitle}>Chart will go here</Text>
+              <Text style={styles.sectionTitle}>{metric} Chart</Text>
+            </View>
+            <View>
+              <Chart 
+                chartKey={`${metric}-${athlete ?? "self"}`} 
+                data={chartData} 
+                metric={metric}
+                units={filteredData[0]?.units}
+              />
             </View>
           </>
         )}
