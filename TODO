@@ -3,8 +3,11 @@
     Flow:
         User signs in / creates account
             Is the user ID already assigned to an athlete? Then redirect to home page.
+                Keep (auth)/_layout the same since the user isn't signed in on that page. Redirect to a different page 
+                where you check if the account is linked. If not, take to link page. If it is already linked, go to regular home page
             Otherwise, redirect to link athlete page.
                 Dropdown Menu of athletes that do not have a user id linked to it.
+                    Maybe a search instead of a dropdown menu
                 Menu to enter birth date to verify they are the athlete they selected.
                 Button to update the athlete in the athletes table with the new Clerk user ID.
                     After pressed, the user is redirected to the home page.

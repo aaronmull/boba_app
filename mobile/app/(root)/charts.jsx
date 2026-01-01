@@ -17,10 +17,10 @@ export default function ChartScreen() {
   const { user } = useUser()
   const router = useRouter()
   // hooks
-  const { athletes, userData, loading: loadingAthletes, loadAthletes } = useAthletes(user.id)
-  const { performances, summary, metrics: metricsData, loading: loadingData, loadData, undoData } = useData(user.id)
-  const { allData, loading: loadingAdminData, loadAdminData } = useAdmin()
-  const { metrics: metrics, loading: loadingMetrics, error: metricsError } = useMetrics()
+  const { athletes, loading: loadingAthletes } = useAthletes(user.id)
+  const { performances, loading: loadingData } = useData(user.id)
+  const { allData, loading: loadingAdminData } = useAdmin()
+  const { metrics } = useMetrics()
 
   const [ metric, setMetric ] = useState(null)
   const [ athlete, setAthlete ] = useState(null)

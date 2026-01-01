@@ -11,9 +11,20 @@ import {
 
 const router = express.Router()
 
+// SPECIFIC ROUTES FIRST (before any :params)
+// Get list of athletes that have no Clerk ID
+router.get("/unlinked", getAvailableAthletes)
+
+// Check if the user's Clerk ID is already linked
+router.get("/by-clerk/:clerkUserId", checkIfLinked)
+
 // Get one specific athlete by their Clerk ID
 router.get("/clerk/:clerkUserId", getAthleteByClerkId)
 
+// Link athlete
+router.post("/link", linkAthlete)
+
+// PARAMETERIZED ROUTES LAST
 // Get one specific athlete; profile page
 router.get("/:name", getAthleteByName)
 
@@ -22,13 +33,5 @@ router.get("/", getAllAthletes)
 
 // New athlete post
 router.post("/", createAthlete)
-
-// Check if the user's Clerk ID is already linked
-router.get("/by-clerk/:clerkUserId", checkIfLinked)
-
-// Get list of athletes that have no Clerk ID
-router.get("/unlinked", getAvailableAthletes)
-
-router.post("/link", linkAthlete)
 
 export default router
