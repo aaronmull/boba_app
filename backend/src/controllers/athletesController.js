@@ -105,7 +105,7 @@ export async function checkIfLinked(req, res) {
 export async function getAvailableAthletes(req, res) {
     try {
         const athletes = await sql`
-            SELECT id, name, sport
+            SELECT id, name, sport, dob
             FROM athletes
             WHERE clerk_user_id IS NULL
         `
