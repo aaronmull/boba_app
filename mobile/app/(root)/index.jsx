@@ -28,7 +28,7 @@ export default function Page() {
   const { user } = useUser()
   const { performances, summary, metrics, loadingData, loadData, undoData } = useData(user.id)
   const { allData, loadingAdmin, loadAdminData } = useAdmin();
-  const { athletes, userData, loadingAthletes, loadAthletes } = useAthletes(user.id)
+  const { userData, loadingAthletes, loadAthletes } = useAthletes(user.id)
   const [ refreshing, setRefreshing ] = useState(false)
   const router = useRouter();
 
