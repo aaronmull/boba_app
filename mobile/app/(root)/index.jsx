@@ -49,8 +49,8 @@ export default function Page() {
 
   const onPress = () => {
     Alert.alert(
-      "Log Performances or Create New Athlete",
-      "Would you like to log new performances or create a new athlete?",
+      "Performances, Athlete, or Metrics",
+      "Would you like to log new performances, create a new athlete, or create a new metric?",
       [
         {
           text: "Performances",
@@ -62,6 +62,12 @@ export default function Page() {
           text: "Athlete",
           onPress: () => {
             router.push("/add-athlete")
+          }
+        },
+        {
+          text: "Metric",
+          onPress: () => {
+            router.push("/add-metric")
           }
         },
         {

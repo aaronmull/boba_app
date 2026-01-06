@@ -1,19 +1,20 @@
 import { Text, View, ScrollView, TouchableOpacity } from 'react-native'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useLeaderboardData } from '../../hooks/data/useLeaderboardData'
 import PageLoader from '../../components/PageLoader'
 import { useMetrics } from '../../hooks/metrics/useMetrics'
 import { useSports } from '../../hooks/sports/useSports'
 import DropDownPicker from 'react-native-dropdown-picker';
 import { styles } from '../../assets/styles/leaderboard.styles'
-import { useRouter } from 'expo-router'
-import { Ionicons } from '@expo/vector-icons'
+import { useLocalSearchParams, useRouter } from 'expo-router'
+import { AntDesign, Ionicons } from '@expo/vector-icons'
 import { COLORS } from '../../constants/colors'
 import { getAge } from '../../lib/utils'
 import LeaderboardList from '../../components/LeaderboardList'
 
 export default function LeaderboardScreen() {
   const router = useRouter()
+  const params = useLocalSearchParams()
   const { leaderboardData, loading: loadingLeaderboard, error: dataError } = useLeaderboardData()
   const { metrics, loading: loadingMetrics, error: metricsError } = useMetrics()
   const { sports, loading: loadingSports, error: sportsError, loadSports } = useSports()
@@ -22,6 +23,13 @@ export default function LeaderboardScreen() {
   const [ sport, setSport ] = useState([])
   const [ ageRange, setAgeRange ] = useState(null)
   const [ gender, setGender ] = useState([])
+  const [ viewAdditionalFilters, setViewAdditionalFilters ] = useState(false)
+
+  useEffect(() => {
+    if (params.metric && !metric) {
+      setMetric(params.metric)
+    }
+  }, [])
 
   // Dropdown Pickers
   const [dropdownOpen, setDropdownOpen] = useState({
@@ -72,6 +80,10 @@ export default function LeaderboardScreen() {
     .filter(entry => gender.length === 0 || gender.includes(entry.gender))
     // filter based on dob
     .filter(entry => !ageRange || athleteInAgeRange(entry, ageRange))
+
+  const onPress = async () => {
+    setViewAdditionalFilters(prev => !prev)
+  }
   
   if(loadingLeaderboard || loadingMetrics || loadingSports) return <PageLoader />
 
@@ -106,90 +118,169 @@ export default function LeaderboardScreen() {
             maxHeight={200}
             zIndex={3000}
             containerStyle={styles.pickerContainer}
+            style={{
+                borderColor: COLORS.border,
+            }}
+            textStyle={{
+                color: COLORS.text,
+                fontSize: 16,
+                paddingLeft: 4,
+            }}
+            dropDownContainerStyle={{
+                borderColor: COLORS.border,
+            }}
+            searchTextInputStyle={{
+                borderColor: COLORS.border,
+            }}
+            searchContainerStyle={{
+                borderBottomColor: COLORS.border,
+            }}
+            placeholderStyle={{ color: "#9A8478", }}
             placeholder='Select a Metric'
-            placeholderStyle={{ color: 'grey', }}
             searchable={true}
             searchPlaceholder='Search for a Metric'
             listMode="SCROLLVIEW"
           />
-          <Text style={styles.sectionTitle}>Sport</Text>
-          <DropDownPicker 
-            open={dropdownOpen.sport}
-            setOpen={handleSetOpen("sport")}
-            value={sport}
-            setValue={setSport}
-            items={sports.map(s => ({
-              label: s.sport,
-              value: s.sport,
-            }))}
-            maxHeight={200}
-            zIndex={2500}
-            containerStyle={styles.pickerContainer}
-            placeholder='Select Sport(s)'
-            placeholderStyle={{ color: 'grey', }}
-            searchable={true}
-            searchPlaceholder='Search for a Sport'
-            multiple={true}
-            min={0}
-            max={20}
-            mode="BADGE"
-            showBadgeDot={false}
-            multipleText="%d selected"
-            badgeTextStyle={{ fontSize: 14 }}
-            badgeStyle={{
-              borderRadius: 12,
-              paddingHorizontal: 8,
-              paddingVertical: 4,
-            }}
-            extendableBadgeContainer={true}
-            listMode="SCROLLVIEW"
-          />
-          <Text style={styles.sectionTitle}>Gender</Text>
-          <DropDownPicker 
-            open={dropdownOpen.gender}
-            setOpen={handleSetOpen("gender")}
-            value={gender}
-            setValue={setGender}
-            items={[
-              {label: "Male", value: "Male"},
-              {label: "Female", value: "Female"},
-            ]}
-            maxHeight={200}
-            zIndex={2000}
-            containerStyle={styles.pickerContainer}
-            placeholder='Select Gender(s)'
-            placeholderStyle={{ color: "grey", }}
-            searchable={false}
-            multiple={true}
-            min={0}
-            max={2}
-            mode="BADGE"
-            showBadgeDot={false}
-            multipleText="%d selected"
-            badgeTextStyle={{ fontSize: 14 }}
-            badgeStyle={{
-              borderRadius: 12,
-              paddingHorizontal: 8,
-              paddingVertical: 4,
-            }}
-            listMode='SCROLLVIEW'
-          />
-          <Text style={styles.sectionTitle}>Age Range</Text>
-          <DropDownPicker 
-            open={dropdownOpen.age}
-            setOpen={handleSetOpen("age")}
-            value={ageRange}
-            setValue={setAgeRange}
-            items={ageRanges}
-            maxHeight={200}
-            zIndex={1500}
-            containerStyle={styles.pickerContainer}
-            placeholder='Select Age Range'
-            placeholderStyle={{ color: "grey" }}
-            searchable={false}
-            listMode='SCROLLVIEW'
-            multiple={false}
-          />
+
+          <TouchableOpacity style={styles.logoutButton} onPress={onPress}>
+            {viewAdditionalFilters ? (
+              <AntDesign name="minus" size={22} color={COLORS.text} />
+            ) : (
+              <Ionicons name="add" size={24} color={COLORS.text}/>
+            )}
+            <Text style={styles.logoutButtonText}>
+              {viewAdditionalFilters ? 'Hide Additional Filters' : 'View Additional Filters'}
+            </Text>
+          </TouchableOpacity>
+
+          {/* Hidden initially */}
+          {viewAdditionalFilters && (
+            <>
+              <Text style={styles.sectionTitle}>Sport</Text>
+              <DropDownPicker 
+                open={dropdownOpen.sport}
+                setOpen={handleSetOpen("sport")}
+                value={sport}
+                setValue={setSport}
+                items={sports.map(s => ({
+                  label: s.sport,
+                  value: s.sport,
+                }))}
+                maxHeight={200}
+                zIndex={2500}
+                containerStyle={styles.pickerContainer}
+                style={{
+                    borderColor: COLORS.border,
+                }}
+                textStyle={{
+                    color: COLORS.text,
+                    fontSize: 16,
+                    paddingLeft: 4,
+                }}
+                dropDownContainerStyle={{
+                    borderColor: COLORS.border,
+                }}
+                searchTextInputStyle={{
+                    borderColor: COLORS.border,
+                }}
+                searchContainerStyle={{
+                    borderBottomColor: COLORS.border,
+                }}
+                placeholderStyle={{ color: "#9A8478", }}
+                placeholder='Select Sport(s)'
+                searchable={true}
+                searchPlaceholder='Search for a Sport'
+                multiple={true}
+                min={0}
+                max={20}
+                mode="BADGE"
+                showBadgeDot={false}
+                multipleText="%d selected"
+                badgeTextStyle={{ fontSize: 14 }}
+                badgeStyle={{
+                  borderRadius: 12,
+                  paddingHorizontal: 8,
+                  paddingVertical: 4,
+                }}
+                extendableBadgeContainer={true}
+                listMode="SCROLLVIEW"
+              />
+              <Text style={styles.sectionTitle}>Gender</Text>
+              <DropDownPicker 
+                open={dropdownOpen.gender}
+                setOpen={handleSetOpen("gender")}
+                value={gender}
+                setValue={setGender}
+                items={[
+                  {label: "Male", value: "Male"},
+                  {label: "Female", value: "Female"},
+                ]}
+                maxHeight={200}
+                zIndex={2000}
+                containerStyle={styles.pickerContainer}
+                style={{
+                    borderColor: COLORS.border,
+                }}
+                textStyle={{
+                    color: COLORS.text,
+                    fontSize: 16,
+                    paddingLeft: 4,
+                }}
+                dropDownContainerStyle={{
+                    borderColor: COLORS.border,
+                }}
+                searchTextInputStyle={{
+                    borderColor: COLORS.border,
+                }}
+                searchContainerStyle={{
+                    borderBottomColor: COLORS.border,
+                }}
+                placeholderStyle={{ color: "#9A8478", }}
+                placeholder='Select Gender(s)'
+                searchable={false}
+                multiple={true}
+                min={0}
+                max={2}
+                mode="BADGE"
+                showBadgeDot={false}
+                multipleText="%d selected"
+                badgeTextStyle={{ fontSize: 14 }}
+                badgeStyle={{
+                  borderRadius: 12,
+                  paddingHorizontal: 8,
+                  paddingVertical: 4,
+                }}
+                listMode='SCROLLVIEW'
+              />
+              <Text style={styles.sectionTitle}>Age Range</Text>
+              <DropDownPicker 
+                open={dropdownOpen.age}
+                setOpen={handleSetOpen("age")}
+                value={ageRange}
+                setValue={setAgeRange}
+                items={ageRanges}
+                maxHeight={200}
+                zIndex={1500}
+                containerStyle={styles.pickerContainer}
+                style={{
+                    borderColor: COLORS.border,
+                }}
+                textStyle={{
+                    color: COLORS.text,
+                    fontSize: 16,
+                    paddingLeft: 4,
+                }}
+                dropDownContainerStyle={{
+                    borderColor: COLORS.border,
+                }}
+                placeholderStyle={{ color: "#9A8478", }}
+                placeholder='Select Age Range'
+                searchable={false}
+                listMode='SCROLLVIEW'
+                multiple={false}
+              />
+            </>
+          )}
         </View>
 
         {/* LEADERBOARD */}

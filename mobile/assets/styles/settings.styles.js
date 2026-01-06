@@ -292,11 +292,15 @@ export const styles = StyleSheet.create({
     shadowOpacity: 0.05,
     shadowRadius: 2,
     elevation: 1,
-    alignSelf: "flex-start"
+    alignSelf: "flex-start",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
   },
   logoutButtonText: {
     color: COLORS.text,
     fontWeight: 500, 
     fontSize: 16,   
+    paddingLeft: 4,
   },
 });

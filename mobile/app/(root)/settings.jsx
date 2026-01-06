@@ -4,7 +4,7 @@ import { useAuth, useUser } from "@clerk/clerk-expo";
 import { LeaderboardToggle } from "../../components/LeaderboardToggle";
 import PageLoader from "../../components/PageLoader";
 import { ScrollView, TouchableOpacity, View, Text, Alert } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
+import { AntDesign, FontAwesome6, Ionicons } from "@expo/vector-icons";
 import { COLORS } from "../../constants/colors";
 
 export default function SettingsScreen() {

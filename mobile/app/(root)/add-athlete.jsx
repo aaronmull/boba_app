@@ -113,8 +113,25 @@ export default function AddAthlete() {
                         maxHeight={200}
                         zIndex={3000}
                         containerStyle={styles.pickerContainer}
+                        style={{
+                            borderColor: COLORS.border,
+                        }}
+                        textStyle={{
+                            color: COLORS.text,
+                            fontSize: 16,
+                            paddingLeft: 4,
+                        }}
+                        dropDownContainerStyle={{
+                            borderColor: COLORS.border,
+                        }}
+                        searchTextInputStyle={{
+                            borderColor: COLORS.border,
+                        }}
+                        searchContainerStyle={{
+                            borderBottomColor: COLORS.border,
+                        }}
+                        placeholderStyle={{ color: "#9A8478", }}
                         placeholder="Select a Sport"
-                        placeholderStyle={{ color: 'grey', }}
                         searchable={true}
                         searchPlaceholder="Search for a Sport"
                         listMode="SCROLLVIEW"
@@ -134,8 +151,19 @@ export default function AddAthlete() {
                         maxHeight={200}
                         zIndex={2000}
                         containerStyle={styles.pickerContainer}
+                        style={{
+                            borderColor: COLORS.border,
+                        }}
+                        textStyle={{
+                            color: COLORS.text,
+                            fontSize: 16,
+                            paddingLeft: 4,
+                        }}
+                        dropDownContainerStyle={{
+                            borderColor: COLORS.border,
+                        }}
+                        placeholderStyle={{ color: "#9A8478", }}
                         placeholder="Select a Gender"
-                        placeholderStyle={{ color: 'grey', }}
                         searchable={false}
                         listMode="SCROLLVIEW"
                     />

@@ -21,15 +21,15 @@ export async function createMetric(req, res) {
     
     try {
 
-        const {metric, units, is_time} = req.body
+        const {metric, units, isTime} = req.body
 
-        if(!metric || !units || is_time === null) {
+        if(!metric || !units || isTime === null) {
             return res.status(400).json({message:"All fields required"})
         }
 
         const newMetric = await sql`
             INSERT INTO metrics(metric, units, is_time)
-            VALUES(${metric},${units},${is_time})
+            VALUES(${metric},${units},${isTime})
             RETURNING *
         `
 

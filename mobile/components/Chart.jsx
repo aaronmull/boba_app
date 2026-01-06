@@ -1,9 +1,6 @@
 // components/Chart.jsx
-// future improvements:
-//  1. PR highlighting
-//  2. Date ranges
 import { Dimensions, View, Text, ScrollView } from "react-native";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { LineChart } from "react-native-chart-kit"
 import { COLORS } from "../constants/colors";
 
@@ -19,17 +16,38 @@ export default function Chart({ chartKey, data, metric, units }) {
         setSelectedPoint(null);
     }, [chartKey]);
 
+    // Determine best performance based on metric type
+    const bestPerformanceIndex = useMemo(() => {
+        const values = data.datasets[0].data;
+        if (!values.length) return null;
+
+        // For time-based metrics, lower is better
+        if (units === "s") {
+            const minValue = Math.min(...values);
+            return values.indexOf(minValue);
+        }
+        
+        // For distance and weight, higher is better
+        if (units === "in" || units === "lb") {
+            const maxValue = Math.max(...values);
+            return values.indexOf(maxValue);
+        }
+
+        return null;
+    }, [data, units]);
+
     const chartConfig = {
         backgroundGradientFrom: COLORS.background,
         backgroundGradientTo: COLORS.background,
         decimalPlaces: 2,
         color: () => COLORS.primary,
         labelColor: () => COLORS.text,
-        propsForDots: {
-            r: "3",
+        propsForDots: (dataPoint, dataPointIndex) => ({
+            r: dataPointIndex === bestPerformanceIndex ? "6" : "3",
             strokeWidth: "2",
-            stroke: COLORS.primary,
-        },
+            stroke: dataPointIndex === bestPerformanceIndex ? (COLORS.pb || '#FFD700') : COLORS.primary,
+            fill: dataPointIndex === bestPerformanceIndex ? (COLORS.pb || '#FFD700') : COLORS.primary,
+        }),
         propsForBackgroundLines: {
             opacity: "0.18"
         }
@@ -38,7 +56,8 @@ export default function Chart({ chartKey, data, metric, units }) {
     const onDataClick = ({ value, index }) => {
         setSelectedPoint({
             value,
-            label: data.labels[index]
+            label: data.labels[index],
+            index
         })
     }
 
@@ -70,18 +89,19 @@ export default function Chart({ chartKey, data, metric, units }) {
             if(metric === "Vertical Jump") return `${value}"`
             const totalInches = Number(value);
             const feet = Math.floor(totalInches / 12);
-            const inches = Math.round(totalInches % 12);
+            const inches = totalInches % 12;
             return `${feet}' ${inches}"`;
         }
         if (units === "s") {
-        return `${Number(value).toFixed(2)} s`;
+            return `${Number(value).toFixed(2)} s`;
         }
         if (units === "lb") {
-        return `${Number(value).toFixed(1)} lb`;
+            return `${Number(value).toFixed(1)} lb`;
         }
         return value ?? "-"
     }
 
+    const isBestPerformance = selectedPoint?.index === bestPerformanceIndex;
 
     return (
         <View>
@@ -94,7 +114,7 @@ export default function Chart({ chartKey, data, metric, units }) {
                     bezier
                     onDataPointClick={onDataClick}
                     formatYLabel={(value) => 
-                        formatYAxisValue(value, units, metric)
+                        formatYAxisValue(Number(value).toFixed(2), units, metric)
                     }
                     verticalLabelRotation={-45}
                     xLabelsOffset={15}
@@ -107,7 +127,7 @@ export default function Chart({ chartKey, data, metric, units }) {
                     marginBottom: 12,
                     padding: 10,
                     borderRadius: 10,
-                    backgroundColor: COLORS.card,
+                    backgroundColor: isBestPerformance ? COLORS.pb || '#FFD700' : COLORS.card,
                     shadowColor: "#000",
                     shadowOpacity: 0.15,
                     shadowRadius: 6,
@@ -117,10 +137,27 @@ export default function Chart({ chartKey, data, metric, units }) {
             >
                 {selectedPoint ? (
                     <>
-                        <Text style={{ fontWeight: "600", color: COLORS.text }}>
+                        {isBestPerformance && (
+                            <Text style={{ 
+                                fontWeight: "600", 
+                                color: COLORS.background,
+                                fontSize: 14,
+                                marginBottom: 4,
+                            }}>
+                                🏆 Personal Best
+                            </Text>
+                        )}
+                        <Text style={{ 
+                            fontWeight: "600", 
+                            color: isBestPerformance ? COLORS.background : COLORS.text 
+                        }}>
                             {selectedPoint.label}
                         </Text>
-                        <Text style={{ color: COLORS.text, marginTop: 4 }}>
+                        <Text style={{ 
+                            color: isBestPerformance ? COLORS.background : COLORS.text, 
+                            marginTop: 4,
+                            fontWeight: isBestPerformance ? "500" : "400"
+                        }}>
                             {formatPerformance(selectedPoint.value)}
                         </Text>
                     </>

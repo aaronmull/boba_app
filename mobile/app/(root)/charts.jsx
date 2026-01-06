@@ -1,7 +1,7 @@
 import { Text, View, TouchableOpacity, ScrollView } from 'react-native'
-import React, { useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { useUser } from '@clerk/clerk-expo'
-import { useRouter } from 'expo-router'
+import { useLocalSearchParams, useRouter } from 'expo-router'
 import { useAthletes } from '../../hooks/athlete/useAthletes'
 import { useData } from '../../hooks/data/useData'
 import { useAdmin } from '../../hooks/admin/useAdmin'
@@ -16,6 +16,8 @@ import Chart from '../../components/Chart'
 export default function ChartScreen() {
   const { user } = useUser()
   const router = useRouter()
+  const params = useLocalSearchParams()
+
   // hooks
   const { athletes, loading: loadingAthletes } = useAthletes(user.id)
   const { performances, loading: loadingData } = useData(user.id)
@@ -29,6 +31,12 @@ export default function ChartScreen() {
   const isCoach = role == "coach";
   const performanceList = isCoach ? allData : performances;
   
+  useEffect(() => {
+    if (params.metric && !metric) {
+      setMetric(params.metric)
+    }
+  }, [params.metric])
+
   const [ dropdownOpen, setDropdownOpen ] = useState({
     metric: false,
     athlete: false,
@@ -82,9 +90,6 @@ export default function ChartScreen() {
     ? Boolean(metric && athlete)
     : Boolean(metric)
 
-  // console.log(sorted)
-  // console.log(chartData)
-
   return (
     <View style={styles.container}>
 
@@ -116,8 +121,25 @@ export default function ChartScreen() {
             maxHeight={200}
             zIndex={3000}
             containerStyle={styles.pickerContainer}
+            style={{
+                borderColor: COLORS.border,
+            }}
+            textStyle={{
+                color: COLORS.text,
+                fontSize: 16,
+                paddingLeft: 4,
+            }}
+            dropDownContainerStyle={{
+                borderColor: COLORS.border,
+            }}
+            searchTextInputStyle={{
+                borderColor: COLORS.border,
+            }}
+            searchContainerStyle={{
+                borderBottomColor: COLORS.border,
+            }}
+            placeholderStyle={{ color: "#9A8478", }}
             placeholder='Select a Metric'
-            placeholderStyle={{ color: 'grey', }}
             searchable={true}
             searchPlaceholder='Search for a Metric'
             listMode="SCROLLVIEW"
@@ -138,6 +160,23 @@ export default function ChartScreen() {
                 maxHeight={200}
                 zIndex={2000}
                 containerStyle={styles.pickerContainer}
+                style={{
+                    borderColor: COLORS.border,
+                }}
+                textStyle={{
+                    color: COLORS.text,
+                    fontSize: 16,
+                    paddingLeft: 4,
+                }}
+                dropDownContainerStyle={{
+                    borderColor: COLORS.border,
+                }}
+                searchTextInputStyle={{
+                    borderColor: COLORS.border,
+                }}
+                searchContainerStyle={{
+                    borderBottomColor: COLORS.border,
+                }}
                 placeholder='Select an Athlete'
                 placeholderStyle={{ color: 'grey', }}
                 searchable={true}

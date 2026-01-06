@@ -278,4 +278,24 @@ export const styles = StyleSheet.create({
     fontSize: 14,
   },
 
+  logoutButton: {
+    padding: 10,
+    borderRadius: 20,
+    backgroundColor: COLORS.card,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.05,
+    shadowRadius: 2,
+    elevation: 1,
+    alignSelf: "flex-start",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  logoutButtonText: {
+    color: COLORS.text,
+    fontWeight: 500, 
+    fontSize: 16,   
+    paddingLeft: 4,
+  },
 });

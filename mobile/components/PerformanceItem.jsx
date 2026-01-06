@@ -1,21 +1,36 @@
-import { View, Text, TouchableOpacity, Touchable } from "react-native"
-import { FontAwesome5, Entypo, MaterialDesignIcons, Ionicons } from "@expo/vector-icons"
+import { View, Text, TouchableOpacity, Alert } from "react-native"
+import { FontAwesome5, Entypo, MaterialCommunityIcons, Ionicons } from "@expo/vector-icons"
 import { styles } from "../assets/styles/home.styles"
 import { COLORS } from "../constants/colors"
 import { formatDate } from "../lib/utils"
+import { useRouter } from "expo-router"
+
 
 // https://oblador.github.io/react-native-vector-icons/
 // Map units to respective icons
 const METRIC_ICONS = {
     s :  {component: FontAwesome5,        name: "running"},
     in : {component: Entypo,              name: "ruler"},
-    lb : {component: MaterialDesignIcons, name: "weight-lifter"},
+    lb : {component: MaterialCommunityIcons, name: "weight-lifter"},
+}
+
+const OTHER_ICONS = {
+    "10m Fly" : { component: MaterialCommunityIcons, name: "run-fast" },
 }
 
 export const PerformanceItem = ({ item, performances, metrics, isCoach, undoData }) => {
     // Get the icon object that corresponds with the unit,
     // Get the component needed to render the icon through expo/vector-icons
-    const iconConfig = METRIC_ICONS[item.units]
+    const router = useRouter()
+
+    const getIconConfig = (item) => {
+        if (item.metric === "10m Fly") {
+            return OTHER_ICONS[item.metric]
+        }
+        return METRIC_ICONS[item.units]
+    }
+
+    const iconConfig = getIconConfig(item)
     const IconComponent = iconConfig?.component
 
     // Get the metric table entry that corresponds to the performance metric,
@@ -63,7 +78,7 @@ export const PerformanceItem = ({ item, performances, metrics, isCoach, undoData
             if(item.metric === "Vertical Jump") return `${item.measurement}"`
             const totalInches = Number(item.measurement);
             const feet = Math.floor(totalInches / 12);
-            const inches = Math.round(totalInches % 12);
+            const inches = totalInches % 12;
             return `${feet}' ${inches}"`;
         }
         if (item.units === "s") {
@@ -75,9 +90,40 @@ export const PerformanceItem = ({ item, performances, metrics, isCoach, undoData
         return item.measurement ?? "-"
     }
 
+    const onPress = async () => {
+        return Alert.alert(
+            "View your Data",
+            "Would you like to view your data on the leaderboard or your chart?",
+            [
+                {
+                    text: "Leaderboards",
+                    onPress: () => {
+                        router.push({
+                            pathname: "/leaderboards",
+                            params: { metric: item.metric }
+                        })
+                    }
+                },
+                {
+                    text: "Charts",
+                    onPress: () => {
+                        router.push({
+                            pathname: "/charts",
+                            params: { metric: item.metric }
+                        })
+                    }
+                },
+                {
+                    text: "Cancel",
+                    style: 'cancel'
+                }
+            ]
+        )
+    }
+
     return (
         <View style={styles.transactionCard}>
-            <TouchableOpacity style={styles.transactionContent}>
+            <TouchableOpacity style={styles.transactionContent} onPress={onPress}>
                 <View style={styles.categoryIconContainer}>
                     {IconComponent && (
                         <IconComponent

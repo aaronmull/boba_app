@@ -169,8 +169,25 @@ const CreateScreen = () => {
                         maxHeight={200}
                         zIndex={3000}
                         containerStyle={styles.pickerContainer}
+                        style={{
+                            borderColor: COLORS.border,
+                        }}
+                        textStyle={{
+                            color: COLORS.text,
+                            fontSize: 16,
+                            paddingLeft: 4,
+                        }}
+                        dropDownContainerStyle={{
+                            borderColor: COLORS.border,
+                        }}
+                        searchTextInputStyle={{
+                            borderColor: COLORS.border,
+                        }}
+                        searchContainerStyle={{
+                            borderBottomColor: COLORS.border,
+                        }}
+                        placeholderStyle={{ color: "#9A8478", }}
                         placeholder="Select a Metric"
-                        placeholderStyle={{ color: 'grey', }}
                         searchable={true}
                         searchPlaceholder="Search for a Metric"
                         listMode="SCROLLVIEW"
@@ -194,8 +211,25 @@ const CreateScreen = () => {
                         maxHeight={200}
                         zIndex={2000}
                         containerStyle={styles.pickerContainer}
+                        style={{
+                            borderColor: COLORS.border,
+                        }}
+                        textStyle={{
+                            color: COLORS.text,
+                            fontSize: 16,
+                            paddingLeft: 4,
+                        }}
+                        dropDownContainerStyle={{
+                            borderColor: COLORS.border,
+                        }}
+                        searchTextInputStyle={{
+                            borderColor: COLORS.border,
+                        }}
+                        searchContainerStyle={{
+                            borderBottomColor: COLORS.border,
+                        }}
+                        placeholderStyle={{ color: "#9A8478", }}
                         placeholder='Select an Athlete'
-                        placeholderStyle={{ color: 'grey', }}
                         searchable={true}
                         searchPlaceholder='Search for an Athlete'
                         listMode="SCROLLVIEW"
