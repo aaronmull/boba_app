@@ -20,12 +20,8 @@ export function LeaderboardToggle() {
         await loadAthletes()
     }
 
-    console.log(userData.show_on_leaderboard)
-
     return (
         <>
-            <Text style={styles.sectionTitle}>Show your times on the leaderboards</Text>
-            <Text style={styles.leaderboardOptionText}>Other Boba Athletes can view your performances on the leaderboards. </Text>
             <View style={styles.switchContainer}>
                 <Switch
                     value={userData.show_on_leaderboard}

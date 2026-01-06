@@ -127,7 +127,7 @@ export const styles = StyleSheet.create({
     fontWeight: "600",
     color: COLORS.text,
     marginBottom: 6,
-    marginTop: 6,
+    marginTop: 24,
     flexDirection: "row",
     alignItems: "center",
   },
@@ -277,5 +277,26 @@ export const styles = StyleSheet.create({
     fontWeight: "700",
     fontSize: 14,
   },
-
+  leaderboardOptionText: {
+    color: COLORS.text,
+    fontWeight: 450,
+    marginBottom: 12,
+    marginRight: 72,
+  },
+  logoutButton: {
+    padding: 10,
+    borderRadius: 20,
+    backgroundColor: COLORS.card,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.05,
+    shadowRadius: 2,
+    elevation: 1,
+    alignSelf: "flex-start"
+  },
+  logoutButtonText: {
+    color: COLORS.text,
+    fontWeight: 500, 
+    fontSize: 16,   
+  },
 });

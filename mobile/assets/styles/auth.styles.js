@@ -110,4 +110,10 @@ export const styles = StyleSheet.create({
     flex: 1,
     fontSize: 14,
   },
+  subtitle: {
+    fontSize: 16,
+    color: '#666',
+    marginBottom: 20,
+    textAlign: 'center',
+  }
 });

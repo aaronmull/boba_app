@@ -1,3 +1,4 @@
+// app/(auth)/sign-in.jsx
 import { useSignIn } from '@clerk/clerk-expo'
 import { Link, useRouter } from 'expo-router'
 import { Text, TextInput, TouchableOpacity, View } from 'react-native'
@@ -7,6 +8,7 @@ import { Image } from "expo-image"
 import { styles } from '../../assets/styles/auth.styles'
 import { Ionicons } from '@expo/vector-icons'
 import { COLORS } from '../../constants/colors'
+import { ForgotPassword } from '../../components/ForgotPassword'
 
 export default function Page() {
   const { signIn, setActive, isLoaded } = useSignIn()
@@ -15,6 +17,7 @@ export default function Page() {
   const [emailAddress, setEmailAddress] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
+  const [showForgotPassword, setShowForgotPassword] = useState(false)
 
   // Handle the submission of the sign-in form
   const onSignInPress = async () => {
@@ -56,45 +59,60 @@ export default function Page() {
     >
       <View style={styles.container}>
         <Image source={require("../../assets/images/boba.png")} style={styles.illustration}/>
-        <Text style={styles.title}>Welcome Back</Text>
+        <Text style={styles.title}>{showForgotPassword ? 'Reset Password' : 'Welcome Back'}</Text>
 
-        {error ? (
-          <View style={styles.errorBox}>
-            <Ionicons name="alert-circle" size={20} color={COLORS.expense} />
-            <Text style={styles.errorText}>{error}</Text>
-            <TouchableOpacity onPress={() => setError("")}>
-              <Ionicons name="close" size={20} color={COLORS.textLight} />
-            </TouchableOpacity>
-          </View>
-        ) : null}
+        {!showForgotPassword ? (
+          <>
+            {error ? (
+              <View style={styles.errorBox}>
+                <Ionicons name="alert-circle" size={20} color={COLORS.expense} />
+                <Text style={styles.errorText}>{error}</Text>
+                <TouchableOpacity onPress={() => setError("")}>
+                  <Ionicons name="close" size={20} color={COLORS.textLight} />
+                </TouchableOpacity>
+              </View>
+            ) : null}
 
-        <TextInput
-          style={[styles.input, error && styles.errorInput]}
-          autoCapitalize="none"
-          value={emailAddress}
-          placeholderTextColor='#9A8478'
-          placeholder="Enter email"
-          onChangeText={(email) => setEmailAddress(email)}
-        />
-        <TextInput
-          style={[styles.input, error && styles.errorInput]}
-          value={password}
-          placeholderTextColor='#9A8478'
-          placeholder="Enter password"
-          secureTextEntry={true}
-          onChangeText={(password) => setPassword(password)}
-        />
-        <TouchableOpacity style={styles.button} onPress={onSignInPress}>
-          <Text style={styles.buttonText}>Sign In</Text>
-        </TouchableOpacity>
-        <View style={styles.footerContainer}>
-          <Text style={styles.footerText}>Don&apos;t have an account?</Text>
-          <Link href="/sign-up" asChild>
-            <TouchableOpacity>
-              <Text style={styles.linkText}>Sign Up</Text>
+            <TextInput
+              style={[styles.input, error && styles.errorInput]}
+              autoCapitalize="none"
+              value={emailAddress}
+              placeholderTextColor='#9A8478'
+              placeholder="Enter email"
+              onChangeText={(email) => setEmailAddress(email)}
+            />
+            <TextInput
+              style={[styles.input, error && styles.errorInput]}
+              value={password}
+              placeholderTextColor='#9A8478'
+              placeholder="Enter password"
+              secureTextEntry={true}
+              onChangeText={(password) => setPassword(password)}
+            />
+            
+            <TouchableOpacity 
+              onPress={() => setShowForgotPassword(true)} 
+              style={{ alignSelf: 'flex-end', marginBottom: 16 }}
+            >
+              <Text style={styles.linkText}>Forgot Password?</Text>
             </TouchableOpacity>
-          </Link>
-        </View>
+
+            <TouchableOpacity style={styles.button} onPress={onSignInPress}>
+              <Text style={styles.buttonText}>Sign In</Text>
+            </TouchableOpacity>
+            
+            <View style={styles.footerContainer}>
+              <Text style={styles.footerText}>Don&apos;t have an account?</Text>
+              <Link href="/sign-up" asChild>
+                <TouchableOpacity>
+                  <Text style={styles.linkText}>Sign Up</Text>
+                </TouchableOpacity>
+              </Link>
+            </View>
+          </>
+        ) : (
+          <ForgotPassword onCancel={() => setShowForgotPassword(false)} />
+        )}
       </View>
     </KeyboardAwareScrollView>
   )

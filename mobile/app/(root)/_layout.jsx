@@ -20,6 +20,7 @@ export default function Layout() {
             <Stack.Screen name="charts" />
             <Stack.Screen name="leaderboards" />
             <Stack.Screen name="settings" />
+            <Stack.Screen name="forgot-password" />
         </Stack>
     )
 }
