@@ -19,6 +19,7 @@ export default function Layout() {
             <Stack.Screen name="create" />
             <Stack.Screen name="charts" />
             <Stack.Screen name="leaderboards" />
+            <Stack.Screen name="settings" />
         </Stack>
     )
 }

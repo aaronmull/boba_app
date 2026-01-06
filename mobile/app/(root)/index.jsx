@@ -22,6 +22,7 @@ import { useData } from "../../hooks/data/useData"
 import { styles } from "../../assets/styles/home.styles"
 import { useAthletes } from "../../hooks/athlete/useAthletes"
 import { useAdmin } from "../../hooks/admin/useAdmin"
+import { SettingsButton } from "../../components/SettingsButton"
 
 
 export default function Page() {
@@ -70,13 +71,14 @@ export default function Page() {
           </View>
           {/* RIGHT */}
           <View style={styles.headerRight}>
-            <SignOutButton />
             {isCoach && (
               <TouchableOpacity style={styles.addButton} onPress={() => router.push("/create")}>
                 <Ionicons name="add" size={20} color="#FFF" />
                 <Text style={styles.addButtonText}>Add</Text>
               </TouchableOpacity>
             )}
+            <SettingsButton />
+            <SignOutButton />
           </View>
         </View>
         

@@ -1,8 +1,7 @@
-import { StyleSheet, Text, View, ScrollView, TouchableOpacity } from 'react-native'
-import React, { useCallback, useState } from 'react'
+import { Text, View, ScrollView, TouchableOpacity } from 'react-native'
+import React, { useState } from 'react'
 import { useUser } from '@clerk/clerk-expo'
 import { useLeaderboardData } from '../../hooks/data/useLeaderboardData'
-import { useAthletes } from '../../hooks/athlete/useAthletes'
 import PageLoader from '../../components/PageLoader'
 import { useMetrics } from '../../hooks/metrics/useMetrics'
 import { useSports } from '../../hooks/sports/useSports'
@@ -13,10 +12,8 @@ import { Ionicons } from '@expo/vector-icons'
 import { COLORS } from '../../constants/colors'
 import { getAge } from '../../lib/utils'
 import LeaderboardList from '../../components/LeaderboardList'
-import { Feather } from '@expo/vector-icons'
 
 export default function LeaderboardScreen() {
-  const { user } = useUser()
   const router = useRouter()
   const { leaderboardData, loading: loadingLeaderboard, error: dataError } = useLeaderboardData()
   const { metrics, loading: loadingMetrics, error: metricsError } = useMetrics()
@@ -76,30 +73,6 @@ export default function LeaderboardScreen() {
     .filter(entry => gender.length === 0 || gender.includes(entry.gender))
     // filter based on dob
     .filter(entry => !ageRange || athleteInAgeRange(entry, ageRange))
-
-  const sortLeaderboard = (data) => {
-    return [...data].sort((a, b) => {
-      if (a.is_time) return a.measurement - b.measurement
-      return b.measurement - a.measurement
-    })
-  }
-
-  const formatPerformance = (item) => {
-    if(item.units === "in") {
-      if(item.metric === "Vertical Jump") return `${item.measurement}"`
-      const totalInches = Number(item.measurement);
-      const feet = Math.floor(totalInches / 12);
-      const inches = Math.round(totalInches % 12);
-      return `${feet}' ${inches}"`;
-    }
-    if (item.units === "s") {
-      return `${Number(item.measurement).toFixed(2)} s`;
-    }
-    if (item.units === "lb") {
-      return `${Number(item.measurement).toFixed(1)} lb`;
-    }
-    return item.measurement ?? "-"
-  }
   
   if(loadingLeaderboard || loadingMetrics || loadingSports) return <PageLoader />
 

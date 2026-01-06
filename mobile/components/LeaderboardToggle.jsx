@@ -1,7 +1,8 @@
-import { Switch, Text, View } from "react-native";
+import { ActivityIndicator, Switch, Text, View } from "react-native";
 import { useUser } from "@clerk/clerk-expo";
 import { useAthletes } from "../hooks/athlete/useAthletes";
 import { useLeaderboardPreference } from "../hooks/athlete/useLeaderboardPreference"
+import { styles } from "../assets/styles/charts.styles"
 
 export function LeaderboardToggle() {
     const { user } = useUser()
@@ -19,14 +20,25 @@ export function LeaderboardToggle() {
         await loadAthletes()
     }
 
+    console.log(userData.show_on_leaderboard)
+
     return (
-        <View>
-            <Text>Show me on leaderboards</Text>
-            <Switch
-                value={userData.show_on_leaderboard}
-                onValueChange={onToggle}
-                disabled={loading}
-            />
-        </View>
+        <>
+            <Text style={styles.sectionTitle}>Show your times on the leaderboards</Text>
+            <Text style={styles.leaderboardOptionText}>Other Boba Athletes can view your performances on the leaderboards. </Text>
+            <View style={styles.switchContainer}>
+                <Switch
+                    value={userData.show_on_leaderboard}
+                    onValueChange={onToggle}
+                    disabled={loading}
+                    trackColor={{ false: 'red' }}
+                    ios_backgroundColor={'red'}
+                    style={styles.switch}
+                />
+                {loading && (
+                    <ActivityIndicator style={[styles.loadingText, styles.leaderboardOptionText]} size="small" />
+                )}
+            </View>
+        </>
     )
 }
