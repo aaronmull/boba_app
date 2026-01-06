@@ -123,6 +123,10 @@ export async function linkAthlete(req, res) {
         if(!athleteId || !dob || !clerkUserId) {
             return res.status(400).json({ message:"All fields required" })
         }
+
+        const normalizeDate = (date) =>
+            new Date(date).toISOString().split("T")[0]
+
         
         const athlete = await sql`
             SELECT id, name, dob, clerk_user_id
@@ -140,7 +144,10 @@ export async function linkAthlete(req, res) {
             return res.status(409).json({ message: "Athlete is already linked to another account" })
         }
 
-        if(athleteData.dob !== dob) {
+        const athleteDob = normalizeDate(athleteData.dob)
+        const inputDob = normalizeDate(dob)
+
+        if (athleteDob !== inputDob) {
             return res.status(403).json({ message: "Date of birth does not match" })
         }
 
@@ -167,5 +174,40 @@ export async function linkAthlete(req, res) {
     } catch (error) {
         console.error("Error linking athlete", error)
         res.status(500).json({ message: "Internal server error" })
+    }
+}
+
+export async function updateLeaderboardPreference(req, res) {
+    try {
+        const { clerkUserId, showOnLeaderboard } = req.body
+
+        if(!clerkUserId || typeof showOnLeaderboard !== "boolean") {
+            return res.status(400).json({ message: "Invalid request body" })
+        }
+
+        const athlete = await sql`
+            SELECT id
+            FROM athletes
+            WHERE clerk_user_id = ${clerkUserId}
+        `
+
+        if(athlete.length === 0) {
+            return res.status(404).json({ message: "Athlete not found for this user" })
+        }
+
+        const updated = await sql`
+            UPDATE athletes
+            SET show_on_leaderboard = ${showOnLeaderboard}
+            WHERE clerk_user_id = ${clerkUserId}
+            RETURNING id, name, show_on_leaderboard
+        `
+
+        res.status(200).json({
+            message: "Leaderboard preference updated",
+            athlete: updated[0],
+        })
+    } catch (error) {
+        console.error("Error updating leaderboard preference", error)
+        res.status(500).json({ message: "Internal Server Error" })
     }
 }

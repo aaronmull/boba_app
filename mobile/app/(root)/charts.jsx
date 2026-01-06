@@ -111,7 +111,7 @@ export default function ChartScreen() {
             <Ionicons name="arrow-back" size={24} color={COLORS.text} />
         </TouchableOpacity>
         <View style={styles.headerCenter}>
-          <Text style={styles.headerTitle}>Charts</Text>
+          <Text style={styles.headerTitle}>Your Charts</Text>
         </View>
       </View>
 

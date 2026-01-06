@@ -6,7 +6,8 @@ import {
     createAthlete,
     checkIfLinked,
     getAvailableAthletes,  
-    linkAthlete } from "../controllers/athletesController.js"
+    linkAthlete, 
+    updateLeaderboardPreference} from "../controllers/athletesController.js"
 
 
 const router = express.Router()
@@ -23,6 +24,8 @@ router.get("/clerk/:clerkUserId", getAthleteByClerkId)
 
 // Link athlete
 router.post("/link", linkAthlete)
+
+router.patch("/leaderboard", updateLeaderboardPreference)
 
 // PARAMETERIZED ROUTES LAST
 // Get one specific athlete; profile page

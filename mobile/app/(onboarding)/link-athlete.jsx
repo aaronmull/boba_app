@@ -1,10 +1,7 @@
-/**
- * How can I get the athlete object from available when the id does not correspond to the index?
- */
-import { StyleSheet, Text, View } from 'react-native'
+import { Alert, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React, { useState } from 'react'
 import { useUser } from '@clerk/clerk-expo'
-import { Redirect } from 'expo-router'
+import { Redirect, useRouter } from 'expo-router'
 import { useAthletes } from '../../hooks/athlete/useAthletes'
 import PageLoader from '../../components/PageLoader'
 import { styles } from '../../assets/styles/charts.styles'
@@ -12,25 +9,74 @@ import { COLORS } from '../../constants/colors'
 import { SignOutButton } from '../../components/SignOutButton'
 import DropDownPicker from 'react-native-dropdown-picker'
 import DateTimePicker from '@react-native-community/datetimepicker';
+import { Feather, Foundation, Ionicons } from '@expo/vector-icons'
+import { API_URL } from '../../constants/api'
+import { useLinkAthlete } from '../../hooks/athlete/useLinkAthlete'
+import { LeaderboardToggleLinking } from '../../components/LeaderboardToggleLinking'
+import { useLeaderboardPreference } from '../../hooks/athlete/useLeaderboardPreference'
 
 export default function LinkAthlete() {
 
-  const { user } = useUser()
+  const { user, isLoaded } = useUser()
   const { available, userData, loading } = useAthletes(user?.id)
-  if(userData !== null) return <Redirect href={"/"}/>
+  const { linkAthlete, loading: linking } = useLinkAthlete()
+  const { updatePreference } = useLeaderboardPreference()
+  const router = useRouter()
 
   // Athlete Picker States
-  const [ selectedAthlete, setSelectedAthlete ] = useState(null)
   const [ selectedAthleteID, setSelectedAthleteID ] = useState(null)
   const [ open, setOpen ] = useState(false)
 
   // DOB Picker States
   const [ dob, setDob ] = useState(new Date(1598051730000))
+
+  // Show on Leaderboard States
+  const [ showOnLeaderboard, setShowOnLeaderboard ] = useState(false)
+
+  const formatDate = (date) =>
+    new Date(date).toISOString().split("T")[0]
+
   const onChange = (_, selectedDate) => {
     setDob(prev => selectedDate ?? prev)
   }
 
-  if(loading) return <PageLoader />
+  const onPress = async () => {
+    try {
+      const athlete = available.find(a => a.id === selectedAthleteID)
+      if(!athlete) return
+
+      const formattedDOB = formatDate(dob)
+
+      await linkAthlete({
+        athleteId: athlete.id,
+        dob: formattedDOB,
+        clerkUserId: user.id,
+      })
+
+      await updatePreference({
+        clerkUserId: user.id,
+        showOnLeaderboard: showOnLeaderboard,
+      })
+
+      Alert.alert(
+        "Account successfully linked!",
+        "Your account has been linked to your athlete profile.",
+        [
+          {
+            text: "OK",
+            onPress: () => router.replace("/"),
+          },
+        ]
+      )
+    } catch (err) {
+      Alert.alert(err.message)
+      setSelectedAthleteID(null)
+      setDob(new Date(1598051730000))
+    }
+  }
+
+  if(loading || !isLoaded) return <PageLoader />
+  if(userData !== null) return <Redirect href={"/"}/>
 
   return (
     <View style={styles.container}>
@@ -75,15 +121,25 @@ export default function LinkAthlete() {
               textColor={COLORS.other}
               onChange={onChange}
             />
+            <LeaderboardToggleLinking 
+              value={showOnLeaderboard}
+              onValueChange={setShowOnLeaderboard}
+              disabled={linking}
+            />
           </>
         )}
       </View>
 
-      {/* Link Athlete Button; begins birthdate authentication;
-          Touchable Opacity with onChange function that checks birthdate equivalence
-            If equivalent, call the linkAthlete route with the Athlete ID and Clerk ID
-            Else, set athlete and birthdate back to default and give Alert that says that the birthdate was incorrect.
-      */}
+      {selectedAthleteID && (
+        <>
+          <View style={styles.buttonView}>
+            <TouchableOpacity style={[styles.addButton, linking && { opacity: 0.6 }]} disabled={linking} onPress={onPress}>
+              <Feather name="link" size={22} color={COLORS.white} />
+              <Text style={styles.addButtonText}> Link Account</Text>
+            </TouchableOpacity>
+          </View>
+        </>
+      )}
 
     </View>
   )

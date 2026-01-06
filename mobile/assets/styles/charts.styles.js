@@ -277,5 +277,41 @@ export const styles = StyleSheet.create({
     fontWeight: "700",
     fontSize: 14,
   },
-
+  addButton: {
+    backgroundColor: COLORS.primary,
+    paddingHorizontal: 16,
+    paddingVertical: 10,
+    borderRadius: 24,
+    width: "200",
+    height: "50",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  addButtonText: {
+    color: COLORS.white,
+    fontWeight: "600",
+    fontSize: "20",
+    marginLeft: 4,
+  },
+  buttonView: {
+    paddingVertical: "50",
+    alignItems: "center",
+  },
+  leaderboardOptionText: {
+    color: COLORS.text,
+    fontWeight: 450,
+    marginBottom: 12,
+  },
+  switch: {
+    transform: [{ scaleX: 1.3}, {scaleY: 1.2}, ]
+  },
+  switchContainer: {
+    paddingLeft: 12,
+  }
 });

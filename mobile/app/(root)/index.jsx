@@ -91,7 +91,7 @@ export default function Page() {
 
             <TouchableOpacity style={styles.addButton} onPress={() => router.push("/charts")}>
               <AntDesign name="line-chart" size={20} color="#FFF"/>
-              <Text style={styles.addButtonText}>View Charts</Text>
+              <Text style={styles.addButtonText}>View Your Charts</Text>
             </TouchableOpacity>
         </View>
 
