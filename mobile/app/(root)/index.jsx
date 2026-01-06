@@ -3,10 +3,10 @@ import { useEffect, useState } from "react"
 
 // Navigation & auth
 import { useRouter, Link } from "expo-router"
-import { SignedIn, SignedOut, useUser } from "@clerk/clerk-expo"
+import { useUser } from "@clerk/clerk-expo"
 
 // UI components
-import { FlatList, RefreshControl, Text, TouchableOpacity, View } from "react-native"
+import { Alert, FlatList, RefreshControl, Text, TouchableOpacity, View } from "react-native"
 import { Image } from "expo-image"
 import { Ionicons, AntDesign } from "@expo/vector-icons"
 
@@ -47,6 +47,31 @@ export default function Page() {
     setRefreshing(false);
   };
 
+  const onPress = () => {
+    Alert.alert(
+      "Log Performances or Create New Athlete",
+      "Would you like to log new performances or create a new athlete?",
+      [
+        {
+          text: "Performances",
+          onPress: () => {
+            router.push("/create")
+          }
+        },
+        {
+          text: "Athlete",
+          onPress: () => {
+            router.push("/add-athlete")
+          }
+        },
+        {
+          text: "Cancel",
+          style: 'cancel'
+        }
+      ]
+    )
+  }
+
   if(((isCoach && loadingAdmin) || (!isCoach && loadingData) || loadingAthletes) && !refreshing)
     return <PageLoader />;
 
@@ -72,7 +97,7 @@ export default function Page() {
           {/* RIGHT */}
           <View style={styles.headerRight}>
             {isCoach && (
-              <TouchableOpacity style={styles.addButton} onPress={() => router.push("/create")}>
+              <TouchableOpacity style={styles.addButton} onPress={onPress}>
                 <Ionicons name="add" size={20} color="#FFF" />
                 <Text style={styles.addButtonText}>Add</Text>
               </TouchableOpacity>
@@ -83,13 +108,10 @@ export default function Page() {
         </View>
         
         <View style={styles.categoryGrid}>
-            {/* Add condition to check if the athlete wants to be on the leaderboards*/}
-            {true && (
-              <TouchableOpacity style={styles.addButton} onPress={() => router.push("/leaderboards")}>
-                <Ionicons name="list-sharp" size={20} color="#FFF"/>
-                <Text style={styles.addButtonText}>View Leaderboards</Text>
-              </TouchableOpacity>
-            )}
+            <TouchableOpacity style={styles.addButton} onPress={() => router.push("/leaderboards")}>
+              <Ionicons name="list-sharp" size={20} color="#FFF"/>
+              <Text style={styles.addButtonText}>View Leaderboards</Text>
+            </TouchableOpacity>
 
             <TouchableOpacity style={styles.addButton} onPress={() => router.push("/charts")}>
               <AntDesign name="line-chart" size={20} color="#FFF"/>
@@ -97,8 +119,7 @@ export default function Page() {
             </TouchableOpacity>
         </View>
 
-        {/* MAKE SURE THIS ONLY RENDERS IF NOT A COACH */} 
-        {true && (
+        {!isCoach && (
           <PersonalBestsCard summary={summary} />
         )}
         <View style={styles.transactionsHeaderContainer}>

@@ -64,9 +64,10 @@ export default function SettingsScreen() {
                     </TouchableOpacity>
 
                     {/* Other settings? */}
-                    <Text style={styles.sectionTitle}>Other Settings...</Text>
+                    
 
                     {/* Coach Only Settings */}
+                    {/*
                     {isCoach && (
                         <>
                             <Text style={styles.sectionTitle}>Create New Athletes</Text>
@@ -76,6 +77,7 @@ export default function SettingsScreen() {
                             </TouchableOpacity>
                         </>
                     )}
+                    */}
                 </View>
             </ScrollView>
         </View>

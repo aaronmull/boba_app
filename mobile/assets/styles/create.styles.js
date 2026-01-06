@@ -78,18 +78,16 @@ export const styles = StyleSheet.create({
     color: COLORS.white,
   },
   amountContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    borderBottomWidth: 1,
-    borderBottomColor: COLORS.border,
-    paddingBottom: 16,
-    marginBottom: 20,
+    flexDirection: "row", 
+    padding: 10,
+    
   },
   currencySymbol: {
-    fontSize: 24,
+    fontSize: 20,
     fontWeight: "bold",
     color: COLORS.text,
-    marginRight: 8,
+    marginRight: 16,
+    marginLeft: 4,
   },
   amountInput: {
     flex: 1,
@@ -110,18 +108,12 @@ export const styles = StyleSheet.create({
   inputIcon: {
     marginHorizontal: 12,
   },
-  input: {
-    flex: 1,
-    padding: 12,
-    fontSize: 16,
-    color: COLORS.text,
-  },
   sectionTitle: {
     fontSize: 18,
     fontWeight: "600",
     color: COLORS.text,
-    marginBottom: 15,
-    marginTop: 10,
+    marginBottom: 10,
+    marginTop: 15,
     flexDirection: "row",
     alignItems: "center",
   },
@@ -158,5 +150,20 @@ export const styles = StyleSheet.create({
     padding: 20,
     alignItems: "center",
     justifyContent: "center",
+  },
+  pickerCard: {
+    padding: 20,
+    borderBottomWidth: 1,
+    borderBottomColor: COLORS.border
+  },
+  input: {
+    backgroundColor: COLORS.white,
+    borderRadius: 12,
+    padding: 15,
+    marginBottom: 16,
+    borderWidth: 1,
+    borderColor: COLORS.border,
+    fontSize: 16,
+    color: COLORS.text,
   },
 });

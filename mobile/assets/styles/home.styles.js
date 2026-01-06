@@ -256,6 +256,7 @@ export const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     marginBottom: 10,
+    marginTop: 10,
     paddingBottom: 5,
   },
   transactionsList: {

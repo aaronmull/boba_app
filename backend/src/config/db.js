@@ -14,7 +14,7 @@ export async function initDB() {
                 gender VARCHAR(255) NOT NULL,
                 sport VARCHAR(255) NOT NULL,
                 clerk_user_id VARCHAR(255) UNIQUE, -- Linked after Clerk signup
-                show_on_leaderboard BOOLEAN NOT NULL DEFAULT true, -- Global opt-in/out
+                show_on_leaderboard BOOLEAN NOT NULL DEFAULT false, -- Global opt-in/out
                 created_at DATE NOT NULL DEFAULT CURRENT_DATE
             )
         `;

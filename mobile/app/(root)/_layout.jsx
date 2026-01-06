@@ -8,7 +8,6 @@ export default function Layout() {
     const { isSignedIn, isLoaded, user } = useUser();
     const { userData, loading } = useAthletes(user?.id)
 
-    // Better UX
     if (!isLoaded || loading) return <PageLoader />;
     if (!isSignedIn) return <Redirect href={"/sign-in"} />;
     if (isSignedIn && !userData) return <Redirect href={"/link-athlete"} />

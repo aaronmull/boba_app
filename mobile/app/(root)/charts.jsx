@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, TouchableOpacity, ScrollView } from 'react-native'
+import { Text, View, TouchableOpacity, ScrollView } from 'react-native'
 import React, { useMemo, useState } from 'react'
 import { useUser } from '@clerk/clerk-expo'
 import { useRouter } from 'expo-router'
@@ -75,23 +75,6 @@ export default function ChartScreen() {
       ],
     };
   }, [sorted]);
-
-  // const formatPerformance = (item) => {
-  //   if(item.units === "in") {
-  //     if(item.metric === "Vertical Jump") return `${item.measurement}"`
-  //     const totalInches = Number(item.measurement);
-  //     const feet = Math.floor(totalInches / 12);
-  //     const inches = Math.round(totalInches % 12);
-  //     return `${feet}' ${inches}"`;
-  //   }
-  //   if (item.units === "s") {
-  //     return `${Number(item.measurement).toFixed(2)} s`;
-  //   }
-  //   if (item.units === "lb") {
-  //     return `${Number(item.measurement).toFixed(1)} lb`;
-  //   }
-  //   return item.measurement ?? "-"
-  // }
 
   if(loadingAthletes || loadingData || (isCoach && loadingAdminData)) return <PageLoader />
 

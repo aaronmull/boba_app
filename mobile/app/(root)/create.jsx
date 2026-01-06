@@ -2,33 +2,51 @@ import { View, Text, Alert, TouchableOpacity, ActivityIndicator } from 'react-na
 import { useMetrics } from '../../hooks/metrics/useMetrics'
 import { useAthletes } from '../../hooks/athlete/useAthletes'
 import { useRouter } from 'expo-router'
-import { useUser } from '@clerk/clerk-expo' // Check for a function that returns if the user has administrator permissions
+import { useUser } from '@clerk/clerk-expo'
 import { API_URL } from '../../constants/api'
 import { React, useState, useEffect, useRef} from 'react'
 import { styles } from '../../assets/styles/create.styles'
 import { COLORS } from '../../constants/colors'
 import { Ionicons, FontAwesome5 } from '@expo/vector-icons'
-import CustomBottomSheet from '../../components/CustomBottomSheet'
 import { TextInput } from 'react-native-gesture-handler'
+import DropDownPicker from 'react-native-dropdown-picker'
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 
 const CreateScreen = () => {
 
     const router = useRouter()
     const { user } = useUser()
-    const metricRef = useRef(null)
-    const athleteRef = useRef(null)
 
-    const { metrics, mLoading, mError } = useMetrics()
-    const { athletes, aLoading, aError, loadAthletes } = useAthletes()
+    const { metrics } = useMetrics()
+    const { athletes } = useAthletes()
 
     const [metric, setMetric] = useState(null)
     const [athlete, setAthlete] = useState(null)
     const [performance, setPerformance] = useState("")
     const [isLoading, setIsLoading] = useState(false)
-    const [selectedSheet, setSelectedSheet] = useState(true)
 
     const [feet, setFeet] = useState("")
     const [inches, setInches] = useState("")
+
+    const [ dropdownOpen, setDropdownOpen ] = useState({
+        metric: false,
+        athlete: false,
+    })
+
+    const closeAll = () => setDropdownOpen({ metric: false, athlete: false, })
+
+    const openDropdown = name => {
+        closeAll()
+        setDropdownOpen(prev => ({ ...prev, [name]: true}))
+    }
+
+    const handleSetOpen = (name) => (shouldOpen) => {
+        if(shouldOpen) {
+            openDropdown(name)
+        } else {
+            setDropdownOpen(prev => ({ ...prev, [name]: false }))
+        }
+    }
     
     const role = user.publicMetadata.role;
     const isCoach = role == "coach";
@@ -131,111 +149,105 @@ const CreateScreen = () => {
                 </TouchableOpacity>
             </View>
 
-            <View style={styles.card}>
-                <View style={styles.typeSelector}>
-
-                    {/* Metric Selector */}
-                    <TouchableOpacity
-                        style={[styles.typeButton, selectedSheet && styles.typeButtonActive]}
-                        onPress={() => {
-                            athleteRef.current?.close()
-                            metricRef.current?.expand()
-                            setSelectedSheet(true)
+            <KeyboardAwareScrollView>
+                <View style={styles.pickerCard}>
+                    {/* Metric Picker */}
+                    <Text style={styles.sectionTitle}>Metric</Text>
+                    <DropDownPicker 
+                        open={dropdownOpen.metric}
+                        setOpen={handleSetOpen("metric")}
+                        value={metric?.id || null}  // Use the ID as the value
+                        setValue={(callback) => {
+                            const selectedId = typeof callback === 'function' ? callback(metric?.id) : callback;
+                            const selectedMetric = metrics.find(m => m.id === selectedId);
+                            setMetric(selectedMetric);
                         }}
-                    >
-                        <FontAwesome5
-                            name="ruler-horizontal"
-                            size={22}
-                            color={selectedSheet ? COLORS.white : COLORS.typeButtonText}
-                            style={styles.typeIcon}
-                        />
-                        <Text style={[styles.typeButtonText, selectedSheet && styles.typeButtonTextActive]}>
-                            {metric ? metric.metric : 'Select Metric'}
-                        </Text>
-                    </TouchableOpacity>
+                        items={metrics.map(m => ({
+                            label: m.metric,
+                            value: m.id,  // Use the ID
+                        }))}
+                        maxHeight={200}
+                        zIndex={3000}
+                        containerStyle={styles.pickerContainer}
+                        placeholder="Select a Metric"
+                        placeholderStyle={{ color: 'grey', }}
+                        searchable={true}
+                        searchPlaceholder="Search for a Metric"
+                        listMode="SCROLLVIEW"
+                    />
 
-                    {/* Athlete Selector */}
-                    <TouchableOpacity
-                        style={[styles.typeButton, !selectedSheet && styles.typeButtonActive]}
-                        onPress={() => {
-                            metricRef.current?.close()
-                            athleteRef.current?.expand()
-                            setSelectedSheet(false)
+                    {/* Athlete Picker */}
+                    <Text style={styles.sectionTitle}>Athlete</Text>
+                    <DropDownPicker 
+                        open={dropdownOpen.athlete}
+                        setOpen={handleSetOpen("athlete")}
+                        value={athlete?.id || null}  // Use the ID as the value
+                        setValue={(callback) => {
+                            const selectedId = typeof callback === 'function' ? callback(athlete?.id) : callback;
+                            const selectedAthlete = athletes.find(a => a.id === selectedId);
+                            setAthlete(selectedAthlete);
                         }}
-                    >
-                        <FontAwesome5
-                            name="running"
-                            size={22}
-                            color={!selectedSheet ? COLORS.white : COLORS.typeButtonText}
-                            style={styles.typeIcon}
-                        />
-                        <Text style={[styles.typeButtonText, !selectedSheet && styles.typeButtonTextActive]}>
-                            {athlete ? athlete.name : 'Select Athlete'}
-                        </Text>
-                    </TouchableOpacity>
-                </View>
-                {metric && athlete && (
-                    <View style={styles.amountContainer}>
-                        {/* Time or distance? */}
-                        {metric.is_time ? (
-                            <>
-                                <TextInput 
-                                    style={styles.amountInput}
-                                    placeholder="Please enter performance"
-                                    placeholderTextColor={COLORS.textLight}
-                                    value={performance}
-                                    onChangeText={setPerformance}
-                                    keyboardType="numeric"
-                                />
-                                <Text style={styles.currencySymbol}>{metric.units}.</Text>
-                            </>
-                        ) : (
-                            <>
-                                <View style={{ flexDirection: "row", alignItems: "center", flex: 1 }}>
-                                    {/* Feet Input */}
-                                    <TextInput
-                                        style={[styles.amountInput, { textAlign: "center" }]}
-                                        placeholder="XX"
-                                        placeholderTextColor={COLORS.textLight}
-                                        keyboardType="numeric"
-                                        value={feet}
-                                        onChangeText={setFeet}
-                                    />
-                                    <Text style={[styles.currencySymbol, { marginRight: 16 }]}>ft</Text>
+                        items={athletes.map(a => ({
+                            label: a.name,
+                            value: a.id,  // Use the ID
+                        }))}
+                        maxHeight={200}
+                        zIndex={2000}
+                        containerStyle={styles.pickerContainer}
+                        placeholder='Select an Athlete'
+                        placeholderStyle={{ color: 'grey', }}
+                        searchable={true}
+                        searchPlaceholder='Search for an Athlete'
+                        listMode="SCROLLVIEW"
+                    />
 
-                                    {/* Inches Input */}
-                                    <TextInput
-                                        style={[styles.amountInput, { textAlign: "center" }]}
-                                        placeholder="XX"
+                    {metric && athlete && (
+                        <View>
+                            {/* Time or distance? */}
+                            {metric.is_time ? (
+                                <>
+                                    <Text style={styles.sectionTitle}>Time (s)</Text>
+                                    <TextInput 
+                                        style={styles.input}
+                                        placeholder='Enter a time'
                                         placeholderTextColor={COLORS.textLight}
-                                        keyboardType="numeric"
-                                        value={inches}
-                                        onChangeText={setInches}
+                                        value={performance}
+                                        onChangeText={setPerformance}
                                     />
-                                    <Text style={styles.currencySymbol}>in</Text>
-                                </View>
                                 </>
-                        )}
-                    </View>
-                )}
+                            ) : (
+                                <>
+                                    <Text style={styles.sectionTitle}>Distance</Text>
+                                    <View style={styles.amountContainer}>
+                                        {/* Feet Input */}
+                                        <TextInput
+                                            style={[styles.input, { textAlign: "center" }]}
+                                            placeholder="XX"
+                                            placeholderTextColor={COLORS.textLight}
+                                            keyboardType="numeric"
+                                            value={feet}
+                                            onChangeText={setFeet}
+                                        />
+                                        <Text style={styles.currencySymbol}>'</Text>
 
-            </View>
+                                        {/* Inches Input */}
+                                        <TextInput
+                                            style={[styles.input, { textAlign: "center" }]}
+                                            placeholder="XX"
+                                            placeholderTextColor={COLORS.textLight}
+                                            keyboardType="numeric"
+                                            value={inches}
+                                            onChangeText={setInches}
+                                        />
+                                        <Text style={styles.currencySymbol}>"</Text>
+                                    </View>
+                                </>
+                            )}
+                        </View>
+                    )}
 
-            <CustomBottomSheet 
-                ref={metricRef}
-                title="Select Metric"
-                data={metrics || []}
-                onSelect={setMetric}
-                selectedItem={metric}
-             />
-
-            <CustomBottomSheet 
-                ref={athleteRef} 
-                title="Select Athlete"
-                data={athletes || []}
-                onSelect={setAthlete}
-                selectedItem={athlete}
-            />
+                </View>
+            </KeyboardAwareScrollView>
             {isLoading && (
                 <View style={styles.loadingContainer}>
                     <ActivityIndicator size="large" color={COLORS.primary} />

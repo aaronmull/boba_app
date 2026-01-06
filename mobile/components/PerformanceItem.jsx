@@ -12,14 +12,6 @@ const METRIC_ICONS = {
     lb : {component: MaterialDesignIcons, name: "weight-lifter"},
 }
 
-// To add functionality for admin users, I can feed a potential prop
-// from Clerk that will allow me to render a delete button AND the
-// name of the athlete that corresponds to the performance. Since 
-// we made this a separate component, rather than passing one athlete's
-// performances, we can pass ALL performances, which would be useful for
-// mid-session errors. Will need to omit the ranking logic under that
-// condition, OR I could make it so it shows the admins where they rank
-// in terms of ALL athletes. I'll figure that out
 export const PerformanceItem = ({ item, performances, metrics, isCoach, undoData }) => {
     // Get the icon object that corresponds with the unit,
     // Get the component needed to render the icon through expo/vector-icons
@@ -44,10 +36,12 @@ export const PerformanceItem = ({ item, performances, metrics, isCoach, undoData
     const rank = metricPerformances.findIndex(p => p.id === item.id) + 1
 
     let label = null
-    if (rank === 1) label = "🏆 Personal Best"
+    if (rank === 1) { 
+        if(isCoach) label = "🏆 Boba Record"
+        else        label = "🏆 Personal Best"
+    }
     else if (rank <= 5) label = `🔥 Top ${rank}`
 
-    {/* Have to figure out some other color for the icons that doesn't look bland */}
     let iconColor = COLORS.income
     if (rank === 1) 
         iconColor = COLORS.pb

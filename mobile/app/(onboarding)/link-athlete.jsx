@@ -1,4 +1,4 @@
-import { Alert, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { Alert, Text, TouchableOpacity, View } from 'react-native'
 import React, { useState } from 'react'
 import { useUser } from '@clerk/clerk-expo'
 import { Redirect, useRouter } from 'expo-router'
@@ -10,7 +10,6 @@ import { SignOutButton } from '../../components/SignOutButton'
 import DropDownPicker from 'react-native-dropdown-picker'
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { Feather, Foundation, Ionicons } from '@expo/vector-icons'
-import { API_URL } from '../../constants/api'
 import { useLinkAthlete } from '../../hooks/athlete/useLinkAthlete'
 import { LeaderboardToggleLinking } from '../../components/LeaderboardToggleLinking'
 import { useLeaderboardPreference } from '../../hooks/athlete/useLeaderboardPreference'

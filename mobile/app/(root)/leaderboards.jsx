@@ -1,6 +1,5 @@
 import { Text, View, ScrollView, TouchableOpacity } from 'react-native'
 import React, { useState } from 'react'
-import { useUser } from '@clerk/clerk-expo'
 import { useLeaderboardData } from '../../hooks/data/useLeaderboardData'
 import PageLoader from '../../components/PageLoader'
 import { useMetrics } from '../../hooks/metrics/useMetrics'
