@@ -21,6 +21,7 @@ export default function Layout() {
             <Stack.Screen name="leaderboards" />
             <Stack.Screen name="settings" />
             <Stack.Screen name="forgot-password" />
+            <Stack.Screen name="add-athlete" />
         </Stack>
     )
 }
