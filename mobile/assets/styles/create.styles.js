@@ -166,4 +166,10 @@ export const styles = StyleSheet.create({
     fontSize: 16,
     color: COLORS.text,
   },
+  leaderboardOptionText: {
+    color: COLORS.text,
+    fontWeight: 450,
+    marginBottom: 4,
+    marginRight: 72,
+  },
 });

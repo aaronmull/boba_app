@@ -123,14 +123,16 @@ export default function ChartScreen() {
             containerStyle={styles.pickerContainer}
             style={{
                 borderColor: COLORS.border,
+                backgroundColor: COLORS.card,
             }}
             textStyle={{
-                color: COLORS.text,
+                color: COLORS.textLight,
                 fontSize: 16,
                 paddingLeft: 4,
             }}
             dropDownContainerStyle={{
                 borderColor: COLORS.border,
+                backgroundColor: COLORS.card,
             }}
             searchTextInputStyle={{
                 borderColor: COLORS.border,
@@ -138,7 +140,7 @@ export default function ChartScreen() {
             searchContainerStyle={{
                 borderBottomColor: COLORS.border,
             }}
-            placeholderStyle={{ color: "#9A8478", }}
+            placeholderStyle={{ color: COLORS.textLight, }}
             placeholder='Select a Metric'
             searchable={true}
             searchPlaceholder='Search for a Metric'
@@ -162,14 +164,16 @@ export default function ChartScreen() {
                 containerStyle={styles.pickerContainer}
                 style={{
                     borderColor: COLORS.border,
+                    backgroundColor: COLORS.card,
                 }}
                 textStyle={{
-                    color: COLORS.text,
+                    color: COLORS.textLight,
                     fontSize: 16,
                     paddingLeft: 4,
                 }}
                 dropDownContainerStyle={{
                     borderColor: COLORS.border,
+                    backgroundColor: COLORS.card,
                 }}
                 searchTextInputStyle={{
                     borderColor: COLORS.border,
@@ -177,8 +181,8 @@ export default function ChartScreen() {
                 searchContainerStyle={{
                     borderBottomColor: COLORS.border,
                 }}
+                placeholderStyle={{ color: COLORS.textLight, }}
                 placeholder='Select an Athlete'
-                placeholderStyle={{ color: 'grey', }}
                 searchable={true}
                 searchPlaceholder='Search for an Athlete'
                 listMode="SCROLLVIEW"

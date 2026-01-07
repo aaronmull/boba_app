@@ -1,6 +1,5 @@
 // constants/colors.js
-// DELETE OTHER THEMES, CHANGE ONE TO FIT JUSTIN'S BRAND GUIDE
-const bobaTheme = {
+const bobaThemeLight = {
   primary: "#667132",
   background: "#FFF8F3",
   text: "#021B3D",
@@ -16,10 +15,32 @@ const bobaTheme = {
   card: "#FFFFFF",
   shadow: "#000000",
   yellow: "#D6AC46",
+  theme: "light",
+  dateTheme: "dark",
 };
 
+const bobaThemeDark = {
+  primary: "#667132",
+  background: "#021B3D",
+  text: "#e2e2e2ff",
+  border: "#E5D3B7",
+  white: "#FFFFFF",
+  textLight: "#c2b9b5ff",
+  expense: "#E74C3C",
+  income: "#2ECC71",
+  pb: "#EFBF04",
+  silver: "#8f8f8fff",
+  bronze: "#CD7F32",
+  other: "#cececeff",
+  card: "#011025ff",
+  shadow: "#000000",
+  yellow: "#D6AC46",
+  theme: "dark",
+  dateTheme: "light",
+}
+
 export const THEMES = {
-  boba: bobaTheme
+  boba: bobaThemeDark
 };
 
 // 👇 change this to switch theme

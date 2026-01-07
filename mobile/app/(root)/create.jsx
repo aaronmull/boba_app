@@ -65,11 +65,20 @@ const CreateScreen = () => {
         if (!metric) return Alert.alert("Error", "Please select a metric");
         if (!athlete) return Alert.alert("Error", "Please select an athlete");
         
-        if(metric.is_time) {
+        // Check if metric uses simple numeric input (time or lb)
+        if(metric.is_time || metric.units === "lb") {
             if (!performance || isNaN(performance)) {
-                return Alert.alert("Error", "Please enter a valid time")
+                const label = metric.is_time ? "time" : "weight";
+                return Alert.alert("Error", `Please enter a valid ${label}`)
+            }
+        } else if (metric.metric === "Vertical Jump") {
+            // Inches only input for Vertical Jump
+            const inch = parseFloat(inches) || 0;
+            if (inch <= 0) {
+                return Alert.alert("Error", "Please enter a valid height in inches.");
             }
         } else {
+            // Distance input (feet/inches)
             const ft = parseFloat(feet) || 0;
             const inch = parseFloat(inches) || 0;
             const totalInches = ft * 12 + inch;
@@ -80,8 +89,11 @@ const CreateScreen = () => {
         setIsLoading(true)
         try {
             let finalMeasurement;
-            if(metric.is_time) {
+            if(metric.is_time || metric.units === "lb") {
                 finalMeasurement = parseFloat(performance);
+            } else if (metric.metric === "Vertical Jump") {
+                // Inches only for Vertical Jump
+                finalMeasurement = parseFloat(inches) || 0;
             } else {
                 const ft = parseFloat(feet) || 0;
                 const inch = parseFloat(inches) || 0;
@@ -156,7 +168,7 @@ const CreateScreen = () => {
                     <DropDownPicker 
                         open={dropdownOpen.metric}
                         setOpen={handleSetOpen("metric")}
-                        value={metric?.id || null}  // Use the ID as the value
+                        value={metric?.id || null}
                         setValue={(callback) => {
                             const selectedId = typeof callback === 'function' ? callback(metric?.id) : callback;
                             const selectedMetric = metrics.find(m => m.id === selectedId);
@@ -164,21 +176,23 @@ const CreateScreen = () => {
                         }}
                         items={metrics.map(m => ({
                             label: m.metric,
-                            value: m.id,  // Use the ID
+                            value: m.id,
                         }))}
                         maxHeight={200}
                         zIndex={3000}
                         containerStyle={styles.pickerContainer}
                         style={{
                             borderColor: COLORS.border,
+                            backgroundColor: COLORS.card,
                         }}
                         textStyle={{
-                            color: COLORS.text,
+                            color: COLORS.textLight,
                             fontSize: 16,
                             paddingLeft: 4,
                         }}
                         dropDownContainerStyle={{
                             borderColor: COLORS.border,
+                            backgroundColor: COLORS.card,
                         }}
                         searchTextInputStyle={{
                             borderColor: COLORS.border,
@@ -186,7 +200,7 @@ const CreateScreen = () => {
                         searchContainerStyle={{
                             borderBottomColor: COLORS.border,
                         }}
-                        placeholderStyle={{ color: "#9A8478", }}
+                        placeholderStyle={{ color: COLORS.textLight, }}
                         placeholder="Select a Metric"
                         searchable={true}
                         searchPlaceholder="Search for a Metric"
@@ -198,7 +212,7 @@ const CreateScreen = () => {
                     <DropDownPicker 
                         open={dropdownOpen.athlete}
                         setOpen={handleSetOpen("athlete")}
-                        value={athlete?.id || null}  // Use the ID as the value
+                        value={athlete?.id || null}
                         setValue={(callback) => {
                             const selectedId = typeof callback === 'function' ? callback(athlete?.id) : callback;
                             const selectedAthlete = athletes.find(a => a.id === selectedId);
@@ -206,21 +220,23 @@ const CreateScreen = () => {
                         }}
                         items={athletes.map(a => ({
                             label: a.name,
-                            value: a.id,  // Use the ID
+                            value: a.id,
                         }))}
                         maxHeight={200}
                         zIndex={2000}
                         containerStyle={styles.pickerContainer}
                         style={{
                             borderColor: COLORS.border,
+                            backgroundColor: COLORS.card,
                         }}
                         textStyle={{
-                            color: COLORS.text,
+                            color: COLORS.textLight,
                             fontSize: 16,
                             paddingLeft: 4,
                         }}
                         dropDownContainerStyle={{
                             borderColor: COLORS.border,
+                            backgroundColor: COLORS.card,
                         }}
                         searchTextInputStyle={{
                             borderColor: COLORS.border,
@@ -228,7 +244,7 @@ const CreateScreen = () => {
                         searchContainerStyle={{
                             borderBottomColor: COLORS.border,
                         }}
-                        placeholderStyle={{ color: "#9A8478", }}
+                        placeholderStyle={{ color: COLORS.textLight, }}
                         placeholder='Select an Athlete'
                         searchable={true}
                         searchPlaceholder='Search for an Athlete'
@@ -237,7 +253,7 @@ const CreateScreen = () => {
 
                     {metric && athlete && (
                         <View>
-                            {/* Time or distance? */}
+                            {/* Time, weight (lb), inches only, or distance? */}
                             {metric.is_time ? (
                                 <>
                                     <Text style={styles.sectionTitle}>Time (s)</Text>
@@ -245,13 +261,39 @@ const CreateScreen = () => {
                                         style={styles.input}
                                         placeholder='Enter a time'
                                         placeholderTextColor={COLORS.textLight}
+                                        keyboardType="numeric"
                                         value={performance}
                                         onChangeText={setPerformance}
+                                    />
+                                </>
+                            ) : metric.units === "lb" ? (
+                                <>
+                                    <Text style={styles.sectionTitle}>Weight (lb)</Text>
+                                    <TextInput 
+                                        style={styles.input}
+                                        placeholder='Enter weight in pounds'
+                                        placeholderTextColor={COLORS.textLight}
+                                        keyboardType="numeric"
+                                        value={performance}
+                                        onChangeText={setPerformance}
+                                    />
+                                </>
+                            ) : metric.metric === "Vertical Jump" ? (
+                                <>
+                                    <Text style={styles.sectionTitle}>Height (inches)</Text>
+                                    <TextInput 
+                                        style={styles.input}
+                                        placeholder='Enter height in inches'
+                                        placeholderTextColor={COLORS.textLight}
+                                        keyboardType="numeric"
+                                        value={inches}
+                                        onChangeText={setInches}
                                     />
                                 </>
                             ) : (
                                 <>
                                     <Text style={styles.sectionTitle}>Distance</Text>
+                                    <Text style={styles.leaderboardOptionText}>Enter distance in feet and inches</Text>
                                     <View style={styles.amountContainer}>
                                         {/* Feet Input */}
                                         <TextInput

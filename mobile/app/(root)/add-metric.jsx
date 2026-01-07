@@ -70,7 +70,7 @@ export default function AddMetric() {
                     <TextInput 
                         style={styles.input}
                         value={metricName}
-                        placeholderTextColor='#9A8478'
+                        placeholderTextColor={COLORS.textLight}
                         placeholder="Enter metric name"
                         onChangeText={(metricName) => setMetricName(metricName)}
                     />
@@ -88,16 +88,24 @@ export default function AddMetric() {
                         containerStyle={styles.pickerContainer}
                         style={{
                             borderColor: COLORS.border,
+                            backgroundColor: COLORS.card,
                         }}
                         textStyle={{
-                            color: COLORS.text,
+                            color: COLORS.textLight,
                             fontSize: 16,
                             paddingLeft: 4,
                         }}
                         dropDownContainerStyle={{
                             borderColor: COLORS.border,
+                            backgroundColor: COLORS.card,
                         }}
-                        placeholderStyle={{ color: "#9A8478", }}
+                        searchTextInputStyle={{
+                            borderColor: COLORS.border,
+                        }}
+                        searchContainerStyle={{
+                            borderBottomColor: COLORS.border,
+                        }}
+                        placeholderStyle={{ color: COLORS.textLight, }}
                         placeholder={'Select Units'}
                         searchable={false}
                         listMode="SCROLLVIEW"

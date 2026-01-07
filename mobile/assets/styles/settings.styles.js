@@ -303,4 +303,18 @@ export const styles = StyleSheet.create({
     fontSize: 16,   
     paddingLeft: 4,
   },
+  themeToggleContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    marginBottom: 20,
+    borderRadius: 8,
+    backgroundColor: 'rgba(102, 113, 50, 0.1)',
+  },
+  themeToggleLabel: {
+    fontSize: 16,
+    fontWeight: '500',
+  }
 });

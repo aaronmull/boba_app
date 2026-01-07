@@ -120,14 +120,16 @@ export default function LeaderboardScreen() {
             containerStyle={styles.pickerContainer}
             style={{
                 borderColor: COLORS.border,
+                backgroundColor: COLORS.card,
             }}
             textStyle={{
-                color: COLORS.text,
+                color: COLORS.textLight,
                 fontSize: 16,
                 paddingLeft: 4,
             }}
             dropDownContainerStyle={{
                 borderColor: COLORS.border,
+                backgroundColor: COLORS.card,
             }}
             searchTextInputStyle={{
                 borderColor: COLORS.border,
@@ -135,7 +137,7 @@ export default function LeaderboardScreen() {
             searchContainerStyle={{
                 borderBottomColor: COLORS.border,
             }}
-            placeholderStyle={{ color: "#9A8478", }}
+            placeholderStyle={{ color: COLORS.textLight, }}
             placeholder='Select a Metric'
             searchable={true}
             searchPlaceholder='Search for a Metric'
@@ -171,14 +173,16 @@ export default function LeaderboardScreen() {
                 containerStyle={styles.pickerContainer}
                 style={{
                     borderColor: COLORS.border,
+                    backgroundColor: COLORS.card,
                 }}
                 textStyle={{
-                    color: COLORS.text,
+                    color: COLORS.textLight,
                     fontSize: 16,
                     paddingLeft: 4,
                 }}
                 dropDownContainerStyle={{
                     borderColor: COLORS.border,
+                    backgroundColor: COLORS.card,
                 }}
                 searchTextInputStyle={{
                     borderColor: COLORS.border,
@@ -186,7 +190,7 @@ export default function LeaderboardScreen() {
                 searchContainerStyle={{
                     borderBottomColor: COLORS.border,
                 }}
-                placeholderStyle={{ color: "#9A8478", }}
+                placeholderStyle={{ color: COLORS.textLight, }}
                 placeholder='Select Sport(s)'
                 searchable={true}
                 searchPlaceholder='Search for a Sport'
@@ -196,7 +200,11 @@ export default function LeaderboardScreen() {
                 mode="BADGE"
                 showBadgeDot={false}
                 multipleText="%d selected"
-                badgeTextStyle={{ fontSize: 14 }}
+                badgeTextStyle={{ 
+                  fontSize: 14,
+                  color: COLORS.textLight,
+                }}
+                badgeColors={[COLORS.background]}
                 badgeStyle={{
                   borderRadius: 12,
                   paddingHorizontal: 8,
@@ -220,22 +228,18 @@ export default function LeaderboardScreen() {
                 containerStyle={styles.pickerContainer}
                 style={{
                     borderColor: COLORS.border,
+                    backgroundColor: COLORS.card,
                 }}
                 textStyle={{
-                    color: COLORS.text,
+                    color: COLORS.textLight,
                     fontSize: 16,
                     paddingLeft: 4,
                 }}
                 dropDownContainerStyle={{
                     borderColor: COLORS.border,
+                    backgroundColor: COLORS.card,
                 }}
-                searchTextInputStyle={{
-                    borderColor: COLORS.border,
-                }}
-                searchContainerStyle={{
-                    borderBottomColor: COLORS.border,
-                }}
-                placeholderStyle={{ color: "#9A8478", }}
+                placeholderStyle={{ color: COLORS.textLight, }}
                 placeholder='Select Gender(s)'
                 searchable={false}
                 multiple={true}
@@ -244,7 +248,11 @@ export default function LeaderboardScreen() {
                 mode="BADGE"
                 showBadgeDot={false}
                 multipleText="%d selected"
-                badgeTextStyle={{ fontSize: 14 }}
+                badgeTextStyle={{ 
+                  fontSize: 14,
+                  color: COLORS.textLight,
+                }}
+                badgeColors={[COLORS.background]}
                 badgeStyle={{
                   borderRadius: 12,
                   paddingHorizontal: 8,
@@ -259,21 +267,24 @@ export default function LeaderboardScreen() {
                 value={ageRange}
                 setValue={setAgeRange}
                 items={ageRanges}
+                onPress={() => setAgeRange(null)}
                 maxHeight={200}
                 zIndex={1500}
                 containerStyle={styles.pickerContainer}
                 style={{
                     borderColor: COLORS.border,
+                    backgroundColor: COLORS.card,
                 }}
                 textStyle={{
-                    color: COLORS.text,
+                    color: COLORS.textLight,
                     fontSize: 16,
                     paddingLeft: 4,
                 }}
                 dropDownContainerStyle={{
                     borderColor: COLORS.border,
+                    backgroundColor: COLORS.card,
                 }}
-                placeholderStyle={{ color: "#9A8478", }}
+                placeholderStyle={{ color: COLORS.textLight, }}
                 placeholder='Select Age Range'
                 searchable={false}
                 listMode='SCROLLVIEW'

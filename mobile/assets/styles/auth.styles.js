@@ -24,7 +24,7 @@ export const styles = StyleSheet.create({
     textAlign: "center",
   },
   input: {
-    backgroundColor: COLORS.white,
+    backgroundColor: COLORS.card,
     borderRadius: 12,
     padding: 15,
     marginBottom: 16,

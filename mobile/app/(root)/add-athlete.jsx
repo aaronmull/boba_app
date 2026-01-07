@@ -94,7 +94,7 @@ export default function AddAthlete() {
                     <TextInput 
                         style={styles.input}
                         value={name}
-                        placeholderTextColor='#9A8478'
+                        placeholderTextColor={COLORS.textLight}
                         placeholder="Enter name"
                         onChangeText={(name) => setName(name)}
                     />
@@ -115,14 +115,16 @@ export default function AddAthlete() {
                         containerStyle={styles.pickerContainer}
                         style={{
                             borderColor: COLORS.border,
+                            backgroundColor: COLORS.card,
                         }}
                         textStyle={{
-                            color: COLORS.text,
+                            color: COLORS.textLight,
                             fontSize: 16,
                             paddingLeft: 4,
                         }}
                         dropDownContainerStyle={{
                             borderColor: COLORS.border,
+                            backgroundColor: COLORS.card,
                         }}
                         searchTextInputStyle={{
                             borderColor: COLORS.border,
@@ -130,7 +132,7 @@ export default function AddAthlete() {
                         searchContainerStyle={{
                             borderBottomColor: COLORS.border,
                         }}
-                        placeholderStyle={{ color: "#9A8478", }}
+                        placeholderStyle={{ color: COLORS.textLight, }}
                         placeholder="Select a Sport"
                         searchable={true}
                         searchPlaceholder="Search for a Sport"
@@ -153,16 +155,18 @@ export default function AddAthlete() {
                         containerStyle={styles.pickerContainer}
                         style={{
                             borderColor: COLORS.border,
+                            backgroundColor: COLORS.card,
                         }}
                         textStyle={{
-                            color: COLORS.text,
+                            color: COLORS.textLight,
                             fontSize: 16,
                             paddingLeft: 4,
                         }}
                         dropDownContainerStyle={{
                             borderColor: COLORS.border,
+                            backgroundColor: COLORS.card,
                         }}
-                        placeholderStyle={{ color: "#9A8478", }}
+                        placeholderStyle={{ color: COLORS.textLight, }}
                         placeholder="Select a Gender"
                         searchable={false}
                         listMode="SCROLLVIEW"
@@ -174,7 +178,8 @@ export default function AddAthlete() {
                         value={dob}
                         mode="date"
                         display="spinner"
-                        textColor={COLORS.other}
+                        themeVariant={COLORS.theme}
+                        textColor={COLORS.textLight}
                         onChange={onChange}
                     />
                 </View>
