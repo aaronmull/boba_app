@@ -26,6 +26,8 @@ export default function ChartScreen() {
 
   const [ metric, setMetric ] = useState(null)
   const [ athlete, setAthlete ] = useState(null)
+  const [ width, setWidth ] = useState(true)
+  const [ dateRange, setDateRange ] = useState('all') // New state for date range
 
   const role = user.publicMetadata.role;
   const isCoach = role == "coach";
@@ -40,9 +42,14 @@ export default function ChartScreen() {
   const [ dropdownOpen, setDropdownOpen ] = useState({
     metric: false,
     athlete: false,
+    dateRange: false, // New dropdown state
   })
 
-  const closeAll = () => setDropdownOpen({ metric: false, athlete: false, })
+  const closeAll = () => setDropdownOpen({ 
+    metric: false, 
+    athlete: false,
+    dateRange: false,
+  })
 
   const openDropdown = name => {
     closeAll()
@@ -57,9 +64,43 @@ export default function ChartScreen() {
     }
   }
 
+  // Date range options
+  const dateRangeOptions = [
+    { label: 'All Time', value: 'all' },
+    { label: 'Last 7 Days', value: '7days' },
+    { label: 'Last 30 Days', value: '30days' },
+    { label: 'Last 3 Months', value: '3months' },
+    { label: 'Last 6 Months', value: '6months' },
+    { label: 'Last Year', value: '1year' },
+  ]
+
+  // Filter data by date range
+  const getDateThreshold = () => {
+    const now = new Date()
+    switch(dateRange) {
+      case '7days':
+        return new Date(now.setDate(now.getDate() - 7))
+      case '30days':
+        return new Date(now.setDate(now.getDate() - 30))
+      case '3months':
+        return new Date(now.setMonth(now.getMonth() - 3))
+      case '6months':
+        return new Date(now.setMonth(now.getMonth() - 6))
+      case '1year':
+        return new Date(now.setFullYear(now.getFullYear() - 1))
+      default:
+        return null
+    }
+  }
+
   const filteredData = performanceList
     .filter(entry => !metric || entry.metric === metric)
     .filter(entry => !athlete || entry.athlete_name === athlete)
+    .filter(entry => {
+      if (dateRange === 'all') return true
+      const threshold = getDateThreshold()
+      return new Date(entry.created_at) >= threshold
+    })
 
   const sorted = [...filteredData].sort(
     (a, b) => new Date(a.created_at) - new Date(b.created_at)
@@ -90,6 +131,10 @@ export default function ChartScreen() {
     ? Boolean(metric && athlete)
     : Boolean(metric)
 
+  const widthMessage = width
+    ? "Condense Chart Width"
+    : "Expand Chart Width"
+
   return (
     <View style={styles.container}>
 
@@ -119,7 +164,7 @@ export default function ChartScreen() {
               value: m.metric,
             }))}
             maxHeight={200}
-            zIndex={3000}
+            zIndex={4000}
             containerStyle={styles.pickerContainer}
             style={{
                 borderColor: COLORS.border,
@@ -160,7 +205,7 @@ export default function ChartScreen() {
                   value: a.name,
                 }))}
                 maxHeight={200}
-                zIndex={2000}
+                zIndex={3000}
                 containerStyle={styles.pickerContainer}
                 style={{
                     borderColor: COLORS.border,
@@ -190,6 +235,42 @@ export default function ChartScreen() {
             </>
           )}
 
+          {/* Date Range Filter */}
+          <Text style={styles.sectionTitle}>Date Range</Text>
+          <DropDownPicker 
+            open={dropdownOpen.dateRange}
+            setOpen={handleSetOpen("dateRange")}
+            value={dateRange}
+            setValue={setDateRange}
+            items={dateRangeOptions}
+            maxHeight={200}
+            zIndex={2000}
+            containerStyle={styles.pickerContainer}
+            style={{
+                borderColor: COLORS.border,
+                backgroundColor: COLORS.card,
+            }}
+            textStyle={{
+                color: COLORS.textLight,
+                fontSize: 16,
+                paddingLeft: 4,
+            }}
+            dropDownContainerStyle={{
+                borderColor: COLORS.border,
+                backgroundColor: COLORS.card,
+            }}
+            placeholderStyle={{ color: COLORS.textLight, }}
+            placeholder='Select Date Range'
+            listMode="SCROLLVIEW"
+          />
+
+          {/* Width Switcher */}
+          {canRenderChart && chartData && (
+            <TouchableOpacity style={styles.logoutButton} onPress={() => setWidth(prev => !prev)}>
+              <Text style={styles.logoutButtonText}>{widthMessage}</Text>
+            </TouchableOpacity>
+          )}
+
         </View>
         {/* CHART */}
         {!canRenderChart && (
@@ -202,6 +283,13 @@ export default function ChartScreen() {
             </Text>
           </View>
         )}
+        {canRenderChart && chartData === null && (
+          <View style={styles.sectionTitleCenter}>
+            <Text style={styles.sectionTitle}>
+              No data to view for {metric} in selected date range
+            </Text>
+          </View>
+        )}
         {canRenderChart && chartData && (
           <>
             <View style={styles.sectionTitleCenter}>
@@ -209,10 +297,11 @@ export default function ChartScreen() {
             </View>
             <View>
               <Chart 
-                chartKey={`${metric}-${athlete ?? "self"}`} 
+                chartKey={`${metric}-${athlete ?? "self"}-${dateRange}`} 
                 data={chartData} 
                 metric={metric}
                 units={filteredData[0]?.units}
+                widthChoice={width}
               />
             </View>
           </>

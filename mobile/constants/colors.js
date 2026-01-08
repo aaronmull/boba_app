@@ -40,7 +40,7 @@ const bobaThemeDark = {
 }
 
 export const THEMES = {
-  boba: bobaThemeDark
+  boba: bobaThemeLight
 };
 
 // 👇 change this to switch theme

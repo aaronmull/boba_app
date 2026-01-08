@@ -41,6 +41,8 @@ export default function AddMetric() {
                 "Metric successfully created!",
                 "A new Metric has been added to the database.",
             )
+            setMetricName(null)
+            setUnits(null)
         } catch (err) {
             Alert.alert(err.message)
         }

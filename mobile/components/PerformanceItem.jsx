@@ -90,6 +90,8 @@ export const PerformanceItem = ({ item, performances, metrics, isCoach, undoData
         return item.measurement ?? "-"
     }
 
+    const mph = Number(20.45 / item.measurement).toFixed(2)
+
     const onPress = async () => {
         return Alert.alert(
             "View your Data",
@@ -140,6 +142,9 @@ export const PerformanceItem = ({ item, performances, metrics, isCoach, undoData
                     <Text style={[styles.transactionAmount, { color: performanceColor }]}>
                         {formatPerformance(item)}
                     </Text>
+                    {item.units === 's' && item.metric !== "40yd Dash" && (
+                        <Text style={styles.transactionDate}>Speed: {mph}mph</Text>
+                    )}
                     {isCoach && (
                         <Text style={styles.transactionDate}>{item.athlete_name}</Text>
                     )}

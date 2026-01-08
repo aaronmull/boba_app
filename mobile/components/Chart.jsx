@@ -6,11 +6,13 @@ import { COLORS } from "../constants/colors";
 
 const screenWidth = Dimensions.get("window").width
 
-export default function Chart({ chartKey, data, metric, units }) {
+export default function Chart({ chartKey, data, metric, units, widthChoice }) {
     if(!data || data.datasets[0].data.length === 0) return null
     if (!data?.datasets?.[0]?.data?.length) return null;
 
     const [selectedPoint, setSelectedPoint] = useState(null)
+
+    const width = widthChoice ? Math.max(screenWidth, data.labels.length * 50) : screenWidth
 
     useEffect(() => {
         setSelectedPoint(null);
@@ -78,7 +80,7 @@ export default function Chart({ chartKey, data, metric, units }) {
         }
 
         if (units === "lb") {
-            return num.toFixed(1);
+            return num;
         }
 
         return value;
@@ -96,7 +98,7 @@ export default function Chart({ chartKey, data, metric, units }) {
             return `${Number(value).toFixed(2)} s`;
         }
         if (units === "lb") {
-            return `${Number(value).toFixed(1)} lb`;
+            return `${Number(value)} lb`;
         }
         return value ?? "-"
     }
@@ -108,7 +110,7 @@ export default function Chart({ chartKey, data, metric, units }) {
             <ScrollView horizontal showsHorizontalScrollIndicator={false}>
                 <LineChart 
                     data={data}
-                    width={Math.max(screenWidth, data.labels.length * 50)}
+                    width={width}
                     height={220}
                     chartConfig={chartConfig}
                     bezier

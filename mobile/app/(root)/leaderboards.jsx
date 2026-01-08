@@ -21,8 +21,9 @@ export default function LeaderboardScreen() {
 
   const [ metric, setMetric ] = useState(null)
   const [ sport, setSport ] = useState([])
-  const [ ageRange, setAgeRange ] = useState(null)
+  const [ ageRange, setAgeRange ] = useState('all')
   const [ gender, setGender ] = useState([])
+  const [ dateRange, setDateRange ] = useState('all') // New state for date range
   const [ viewAdditionalFilters, setViewAdditionalFilters ] = useState(false)
 
   useEffect(() => {
@@ -37,10 +38,17 @@ export default function LeaderboardScreen() {
     sport: false,
     age: false,
     gender: false,
+    dateRange: false, // New dropdown state
   })
 
   const closeAll = () =>
-    setDropdownOpen({metric: false, sport: false, age: false, gender: false, })
+    setDropdownOpen({
+      metric: false, 
+      sport: false, 
+      age: false, 
+      gender: false,
+      dateRange: false,
+    })
 
   const openDropdown = name => {
     closeAll()
@@ -56,18 +64,49 @@ export default function LeaderboardScreen() {
   }
 
   const ageRanges = [
+    { label: "All Ages", value: "all" },
     { label: "Middle School (11-14)", value: "middle" },
     { label: "High School (13-19)", value: "high"},
     { label: "College & Older (17+)", value: "college" },
   ]
 
+  // Date range options
+  const dateRangeOptions = [
+    { label: 'All Time', value: 'all' },
+    { label: 'Last 7 Days', value: '7days' },
+    { label: 'Last 30 Days', value: '30days' },
+    { label: 'Last 3 Months', value: '3months' },
+    { label: 'Last 6 Months', value: '6months' },
+    { label: 'Last Year', value: '1year' },
+  ]
+
   function athleteInAgeRange(athlete, range) {
+    if (range === "all") return true;
     const age = getAge(athlete.dob)
     if(age < 12) return false;
     if(range === "middle")  return age >= 11 && age <= 14
     if(range === "high")    return age >= 13 && age <= 19
     if(range === "college") return age >= 17
     return true;
+  }
+
+  // Filter data by date range
+  const getDateThreshold = () => {
+    const now = new Date()
+    switch(dateRange) {
+      case '7days':
+        return new Date(now.setDate(now.getDate() - 7))
+      case '30days':
+        return new Date(now.setDate(now.getDate() - 30))
+      case '3months':
+        return new Date(now.setMonth(now.getMonth() - 3))
+      case '6months':
+        return new Date(now.setMonth(now.getMonth() - 6))
+      case '1year':
+        return new Date(now.setFullYear(now.getFullYear() - 1))
+      default:
+        return null
+    }
   }
 
   // Filter leaderboard data to match the filters the user selects
@@ -79,7 +118,13 @@ export default function LeaderboardScreen() {
     // filter based on gender
     .filter(entry => gender.length === 0 || gender.includes(entry.gender))
     // filter based on dob
-    .filter(entry => !ageRange || athleteInAgeRange(entry, ageRange))
+    .filter(entry => ageRange === 'all' || athleteInAgeRange(entry, ageRange))
+    // filter based on date range
+    .filter(entry => {
+      if (dateRange === 'all') return true
+      const threshold = getDateThreshold()
+      return new Date(entry.created_at) >= threshold
+    })
 
   const onPress = async () => {
     setViewAdditionalFilters(prev => !prev)
@@ -116,7 +161,7 @@ export default function LeaderboardScreen() {
               value: m.metric,
             }))}
             maxHeight={200}
-            zIndex={3000}
+            zIndex={4000}
             containerStyle={styles.pickerContainer}
             style={{
                 borderColor: COLORS.border,
@@ -260,6 +305,33 @@ export default function LeaderboardScreen() {
                 }}
                 listMode='SCROLLVIEW'
               />
+              <Text style={styles.sectionTitle}>Date Range</Text>
+              <DropDownPicker 
+                open={dropdownOpen.dateRange}
+                setOpen={handleSetOpen("dateRange")}
+                value={dateRange}
+                setValue={setDateRange}
+                items={dateRangeOptions}
+                maxHeight={200}
+                zIndex={1700}
+                containerStyle={styles.pickerContainer}
+                style={{
+                    borderColor: COLORS.border,
+                    backgroundColor: COLORS.card,
+                }}
+                textStyle={{
+                    color: COLORS.textLight,
+                    fontSize: 16,
+                    paddingLeft: 4,
+                }}
+                dropDownContainerStyle={{
+                    borderColor: COLORS.border,
+                    backgroundColor: COLORS.card,
+                }}
+                placeholderStyle={{ color: COLORS.textLight, }}
+                placeholder='Select Date Range'
+                listMode="SCROLLVIEW"
+              />
               <Text style={styles.sectionTitle}>Age Range</Text>
               <DropDownPicker 
                 open={dropdownOpen.age}
@@ -267,7 +339,6 @@ export default function LeaderboardScreen() {
                 value={ageRange}
                 setValue={setAgeRange}
                 items={ageRanges}
-                onPress={() => setAgeRange(null)}
                 maxHeight={200}
                 zIndex={1500}
                 containerStyle={styles.pickerContainer}

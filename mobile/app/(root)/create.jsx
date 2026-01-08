@@ -11,6 +11,7 @@ import { Ionicons, FontAwesome5 } from '@expo/vector-icons'
 import { TextInput } from 'react-native-gesture-handler'
 import DropDownPicker from 'react-native-dropdown-picker'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
+import PageLoader from '../../components/PageLoader'
 
 const CreateScreen = () => {
 
@@ -142,6 +143,8 @@ const CreateScreen = () => {
             setIsLoading(false)
         }
     }
+
+    if(isLoading) return <PageLoader />
 
     return (
         <View style={styles.container}>
@@ -324,11 +327,6 @@ const CreateScreen = () => {
 
                 </View>
             </KeyboardAwareScrollView>
-            {isLoading && (
-                <View style={styles.loadingContainer}>
-                    <ActivityIndicator size="large" color={COLORS.primary} />
-                </View>
-            )}
         </View>
     )
 }
